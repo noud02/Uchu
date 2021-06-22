@@ -1,13 +1,9 @@
-using RakDotNet.IO;
-
 namespace Uchu.World
 {
-    public class PlayerReadyMessage : ServerGameMessage
+    [ServerGameMessagePacketStruct]
+    public struct PlayerReadyMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.PlayerReady;
-
-        public override void SerializeMessage(BitWriter writer)
-        {
-        }
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.PlayerReady;
     }
 }

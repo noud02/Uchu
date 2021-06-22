@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using System.Threading.Tasks;
+using InfectedRose.Lvl;
 using Microsoft.Scripting;
 using Uchu.World;
 using Uchu.World.Scripting.Native;
@@ -19,11 +20,20 @@ namespace Uchu.StandardScripts.GnarledForest
                     player.Message(new PlayAnimationMessage
                     {
                         Associate = gameObject,
-                        AnimationsId = "interact",
+                        AnimationId = "interact",
                         PlayImmediate = false,
                         TriggerOnCompleteMessage = false,
+                        Priority = 0.4f,
+                        Scale = 1,
                     });
-                    player.Message(new ScriptNetworkVarUpdateMessage { Associate = gameObject, LDFInText = "bIsInUse=7:1" });
+                    player.Message(new ScriptNetworkVarUpdateMessage
+                    {
+                        Associate = gameObject,
+                        Data = new LegoDataDictionary
+                        {
+                            {"bIsInUse", true},
+                        },
+                    });
 
                     for (int i = 0; i < 2; i++)
                     {
@@ -32,7 +42,14 @@ namespace Uchu.StandardScripts.GnarledForest
                     }
                     
                     await Task.Delay(500);
-                    player.Message(new ScriptNetworkVarUpdateMessage { Associate = gameObject, LDFInText = "bIsInUse=7:0" });
+                    player.Message(new ScriptNetworkVarUpdateMessage
+                    {
+                        Associate = gameObject,
+                        Data = new LegoDataDictionary
+                        {
+                            {"bIsInUse", false},
+                        },
+                    });
                 });
             }
 

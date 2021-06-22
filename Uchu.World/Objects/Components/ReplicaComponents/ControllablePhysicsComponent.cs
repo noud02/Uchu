@@ -1,9 +1,8 @@
 using System.Numerics;
-using RakDotNet.IO;
 
 namespace Uchu.World
 {
-    public class ControllablePhysicsComponent : ReplicaComponent
+    public class ControllablePhysicsComponent : StructReplicaComponent<ControllablePhysicsConstruct,ControllablePhysicsSerialization>
     {
         public uint JetpackEffectId { get; set; }
 
@@ -35,77 +34,50 @@ namespace Uchu.World
 
         public override ComponentId Id => ComponentId.ControllablePhysicsComponent;
         
-        public override void Construct(BitWriter writer)
+        /// <summary>
+        /// Creates the Construct packet for the replica component.
+        /// </summary>
+        /// <returns>The Construct packet for the replica component.</returns>
+        public override ControllablePhysicsConstruct GetConstructPacket()
         {
-            var hasJetpackEffect = JetpackEffectId != 0;
-
-            writer.WriteBit(hasJetpackEffect);
-
-            if (hasJetpackEffect)
-            {
-                writer.Write(JetpackEffectId);
-                writer.WriteBit(Flying);
-                writer.WriteBit(false); // Bypass Checks?
-            }
-
-            writer.WriteBit(true);
-
-            for (var i = 0; i < 7; i++) writer.Write<uint>(0);
-
-            WritePhysics(writer);
+            var packet = base.GetConstructPacket();
+            packet.HasJetpackEffect = (JetpackEffectId != 0);
+            packet.BypassFlyingChecks = false;
+            packet.UnknownFlag1 = true;
+            packet.HasSpeedOrGravityMultiplier = (!GravityMultiplier.Equals(1) || !SpeedMultiplier.Equals(1));
+            packet.UnknownFlag2 = true;
+            packet.UnknownUint8 = 0;
+            packet.UnknownFlag3 = false;
+            packet.UnknownFlag4 = true;
+            packet.UnknownFlag5 = false;
+            packet.Position = Transform.Position;
+            packet.Rotation = Transform.Rotation;
+            packet.IsOnRail = NegativeAngularVelocity;
+            packet.HasPlatform = (Platform != null);
+            packet.UnknownFlag7 = false;
+            return packet;
         }
-
-        public override void Serialize(BitWriter writer)
+        
+        /// <summary>
+        /// Creates the Serialize packet for the replica component.
+        /// </summary>
+        /// <returns>The Serialize packet for the replica component.</returns>
+        public override ControllablePhysicsSerialization GetSerializePacket()
         {
-            WritePhysics(writer);
-
-            writer.WriteBit(false);
-        }
-
-        public void WritePhysics(BitWriter writer)
-        {
-            if (writer.Flag(!GravityMultiplier.Equals(1) || !SpeedMultiplier.Equals(1)))
-            {
-                writer.Write(GravityMultiplier);
-                writer.Write(SpeedMultiplier);
-            }
-            
-            writer.WriteBit(true);
-            writer.Write<float>(0);
-            writer.WriteBit(false);
-
-            writer.WriteBit(true);
-            writer.WriteBit(false);
-
-            writer.WriteBit(HasPosition);
-
-            if (!HasPosition) return;
-
-            writer.Write(Transform.Position);
-            writer.Write(Transform.Rotation);
-
-            writer.WriteBit(IsOnGround);
-            writer.WriteBit(NegativeAngularVelocity);
-
-            writer.WriteBit(HasVelocity);
-
-            if (HasVelocity) writer.Write(Velocity);
-
-            writer.WriteBit(HasAngularVelocity);
-
-            if (HasAngularVelocity) writer.Write(AngularVelocity);
-
-            var hasPlatform = Platform != null;
-
-            writer.WriteBit(hasPlatform);
-
-            if (!hasPlatform) return;
-
-            writer.Write(Platform);
-
-            writer.Write(PlatformPosition);
-
-            writer.WriteBit(false);
+            var packet = base.GetSerializePacket();
+            packet.HasSpeedOrGravityMultiplier = (!GravityMultiplier.Equals(1) || !SpeedMultiplier.Equals(1));
+            packet.UnknownFlag1 = true;
+            packet.UnknownUint1 = 0;
+            packet.UnknownFlag2 = false;
+            packet.UnknownFlag3 = true;
+            packet.UnknownFlag4 = false;
+            packet.Position = Transform.Position;
+            packet.Rotation = Transform.Rotation;
+            packet.IsOnRail = NegativeAngularVelocity;
+            packet.HasPlatform = (Platform != null);
+            packet.UnknownFlag6 = false;
+            packet.UnknownFlag7 = false;
+            return packet;
         }
     }
 }

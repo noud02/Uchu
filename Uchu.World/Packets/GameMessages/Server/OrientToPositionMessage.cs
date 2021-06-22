@@ -1,17 +1,12 @@
 using System.Numerics;
-using RakDotNet.IO;
 
 namespace Uchu.World
 {
-    public class OrientToPositionMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.OrientToPosition;
-        
-        public Vector3 Position { get; set; }
-        
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write(Position);
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct OrientToPositionMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.OrientToPosition;
+		public Vector3 Position { get; set; }
+	}
 }

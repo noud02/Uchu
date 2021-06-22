@@ -1,26 +1,11 @@
-using RakDotNet.IO;
-
 namespace Uchu.World
 {
-    public class VendorStatusUpdateMessage : ServerGameMessage
+    [ServerGameMessagePacketStruct]
+    public struct VendorStatusUpdateMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.VendorStatusUpdate;
-        
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.VendorStatusUpdate;
         public bool UpdateOnly { get; set; }
-        
         public ShopEntry[] Entries { get; set; }
-        
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.WriteBit(UpdateOnly);
-
-            writer.Write((uint) Entries.Length);
-
-            foreach (var entry in Entries)
-            {
-                writer.Write(entry.Lot);
-                writer.Write(entry.SortPriority);
-            }
-        }
     }
 }

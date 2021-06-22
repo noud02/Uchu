@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using RakDotNet.IO;
 using Uchu.Core;
 using Uchu.Core.Client;
 using Uchu.World.Client;
 
 namespace Uchu.World
 {
-    public class VendorComponent : ReplicaComponent
+    public class VendorComponent : StructReplicaComponent<VendorSerialization,VendorSerialization>
     {
         public override ComponentId Id => ComponentId.VendorComponent;
         
@@ -38,20 +36,27 @@ namespace Uchu.World
                 Listen(GameObject.OnInteract, OnInteract);
             });
         }
-
-        public override void Construct(BitWriter writer)
+        
+        /// <summary>
+        /// Creates the Construct packet for the replica component.
+        /// </summary>
+        /// <returns>The Construct packet for the replica component.</returns>
+        public override VendorSerialization GetConstructPacket()
         {
-            Serialize(writer);
+            var packet = base.GetConstructPacket();
+            packet.UnknownFlag1 = true;
+            packet.UnknownFlag2 = true;
+            packet.UnknownFlag3 = false;
+            return packet;
         }
-
-        public override void Serialize(BitWriter writer)
+        
+        /// <summary>
+        /// Creates the Serialize packet for the replica component.
+        /// </summary>
+        /// <returns>The Serialize packet for the replica component.</returns>
+        public override VendorSerialization GetSerializePacket()
         {
-            writer.WriteBit(true);
-
-
-            // This flag is only true if construction is true
-            writer.WriteBit(true); // Is Active?
-            writer.WriteBit(false); // Unknown Bit
+            return this.GetConstructPacket();
         }
 
         private void OnInteract(Player player)

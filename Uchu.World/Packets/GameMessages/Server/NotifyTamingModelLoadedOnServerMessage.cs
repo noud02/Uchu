@@ -1,13 +1,9 @@
-﻿using RakDotNet.IO;
-
-namespace Uchu.World
+﻿namespace Uchu.World
 {
-    public class NotifyTamingModelLoadedOnServerMessage : ServerGameMessage
+    [ServerGameMessagePacketStruct]
+    public struct NotifyTamingModelLoadedOnServerMessage
     {
-        public override GameMessageId GameMessageId { get; } = GameMessageId.NotifyTamingModelLoadedOnServer;
-        public override void SerializeMessage(BitWriter writer)
-        {
-            
-        }
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.NotifyTamingModelLoadedOnServer;
     }
 }

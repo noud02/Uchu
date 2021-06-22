@@ -110,17 +110,17 @@ namespace Uchu.World
                     }
                 }
                 
-                NotifyPetTamingMinigame msg = new NotifyPetTamingMinigame();
+                NotifyPetTamingMinigameMessage msg = new NotifyPetTamingMinigameMessage();
 
                 msg.Associate = player;
                 
-                msg.bForceTeleport = true;
-                msg.PlayerTamingID = player.Id;
-                msg.PetID = GameObject.Id;
-                msg.notifyType = NotifyType.BEGIN;
+                msg.ForceTeleport = true;
+                msg.PlayerTaming = player;
+                msg.PetId = GameObject.Id;
+                msg.NotifyType = PetTamingNotifyType.Begin;
                 
                 Vector3 petPos = GameObject.Transform.Position;
-                msg.petsDestPos = petPos;
+                msg.PetDestinationPosition = petPos;
                 Vector3 pos = player.Transform.Position;
                 double deg = Math.Atan2(petPos.Z - pos.Z, petPos.X - pos.X) * 180 / Math.PI;
                 var interaction_distance = GameObject.Settings.ContainsKey("interaction_distance") ? GameObject.Settings["interaction_distance"] : 0.0f;
@@ -129,26 +129,26 @@ namespace Uchu.World
                     petPos.Y,
                     petPos.Z + (float) interaction_distance * (float)Math.Sin(-deg)
                 );
-                msg.telePos = pos;
+                msg.TeleportPosition = pos;
 
-                msg.teleRot = pos.QuaternionLookRotation(petPos);
+                msg.TeleportRotation = pos.QuaternionLookRotation(petPos);
                 
                 Zone.BroadcastMessage(msg);
 
                 var nmsg = new NotifyPetTamingPuzzleSelectedMessage();
                 nmsg.Associate = player;
-                nmsg.Bricks = Bricks;
+                nmsg.Bricks = Bricks.ToArray();
                 player.Message(nmsg);
-                player.Message(new NotifyPetTamingMinigame
+                player.Message(new NotifyPetTamingMinigameMessage
                 {
                     Associate = GameObject,
-                    bForceTeleport = false,
-                    notifyType = NotifyType.BEGIN,
-                    PetID = (ObjectId)(ulong)0,
-                    petsDestPos = Vector3.Zero,
-                    PlayerTamingID = player.Id,
-                    telePos = Vector3.Zero,
-                    teleRot = Quaternion.Identity
+                    ForceTeleport = false,
+                    NotifyType = PetTamingNotifyType.Begin,
+                    PetId = (ObjectId)(ulong)0,
+                    PetDestinationPosition = Vector3.Zero,
+                    PlayerTaming = player,
+                    TeleportPosition = Vector3.Zero,
+                    TeleportRotation = Quaternion.Identity
                 });
 
                 // Create all the pet listeners for other events
@@ -173,8 +173,8 @@ namespace Uchu.World
                 
             PetTamingTryBuildResultMessage nmsg = new PetTamingTryBuildResultMessage();
             nmsg.Associate = msg.Associate;
-            nmsg.bSuccess = !(CorrectCount == Bricks.Count);
-            nmsg.iNumCorrect = CorrectCount;
+            nmsg.Success = !(CorrectCount == Bricks.Count);
+            nmsg.NumberCorrect = CorrectCount;
             (msg.Associate as Player).Message(nmsg);
         }
         
@@ -200,10 +200,10 @@ namespace Uchu.World
             player.Message(new PetResponseMessage
             {
                 Associate = player,
-                ObjIDPet = GameObject,
-                iPetCommandType = 0,
-                iResponse = 10, // Not entirely sure what this response ID is 
-                iTypeID = 0
+                Pet = GameObject,
+                PetCommandType = 0,
+                Response = 10, // Not entirely sure what this response ID is 
+                TypeId = 0
             });
 
             var inventoryComponent = player.GetComponent<InventoryManagerComponent>();
@@ -214,29 +214,29 @@ namespace Uchu.World
             player.Message(new AddPetToPlayerMessage
             {
                 Associate = player,
-                iElementalType = 0, // This appears to be just unused, they are in the DB but they weren't sent correctly in the packet captures
-                name = GameObject.Name,
-                petDBID = pet,
-                PetLOT = GameObject.Lot
+                ElementalType = 0, // This appears to be just unused, they are in the DB but they weren't sent correctly in the packet captures
+                Name = GameObject.Name,
+                PetDBId = pet,
+                PetLot = GameObject.Lot
             });
             
-            player.Message(new RegisterPetIDMessage
+            player.Message(new RegisterPetIdMessage
             {
                 Associate = player,
-                Pet = GameObject
+                Pet = GameObject,
             });
             
-            player.Message(new RegisterPetDBIDMessage
+            player.Message(new RegisterPetDBIdMessage
             {
                 Associate = player,
-                PetItemObject = pet
+                Pet = pet,
             });
             
             player.Message( new MarkInventoryItemAsActiveMessage
             {
                 Associate = player,
-                bActive = true,
-                itemID = pet.Id
+                Active = true,
+                ItemId = pet,
             });
             
             // TODO: Add listener for name select

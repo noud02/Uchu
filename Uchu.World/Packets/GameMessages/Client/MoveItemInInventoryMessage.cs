@@ -1,33 +1,17 @@
-using RakDotNet.IO;
 using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class MoveItemInInventoryMessage : ClientGameMessage
+    [ClientGameMessagePacketStruct]
+    public struct MoveItemInInventoryMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.MoveItemInInventory;
-
-        public InventoryType DestinationInventoryType { get; set; } = InventoryType.Invalid;
-
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.MoveItemInInventory;
+        [Default(InventoryType.Invalid)]
+        public InventoryType DestinationInventoryType { get; set; }
         public Item Item { get; set; }
-
         public InventoryType CurrentInventoryType { get; set; }
-
         public int ResponseCode { get; set; }
-
         public int NewSlot { get; set; }
-
-        public override void Deserialize(BitReader reader)
-        {
-            if (reader.ReadBit()) DestinationInventoryType = (InventoryType) reader.Read<int>();
-
-            Item = reader.ReadGameObject<Item>(Associate.Zone);
-
-            CurrentInventoryType = (InventoryType) reader.Read<int>();
-
-            ResponseCode = reader.Read<int>();
-
-            NewSlot = reader.Read<int>();
-        }
     }
 }

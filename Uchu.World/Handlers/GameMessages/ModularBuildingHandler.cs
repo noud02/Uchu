@@ -53,7 +53,7 @@ namespace Uchu.World.Handlers.GameMessages
         [PacketHandler]
         public void SetBuildModeHandler(SetBuildModeMessage message, Player player)
         {
-            player.Message(new SetBuildModeConfirmed
+            player.Message(new SetBuildModeConfirmedMessage()
             {
                 Associate = message.Associate,
                 ModePaused = message.ModePaused,

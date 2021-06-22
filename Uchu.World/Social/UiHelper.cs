@@ -29,7 +29,7 @@ namespace Uchu.World.Social
             writer.Write((byte) Amf3Type.True);
             writer.Write((byte) Amf3Type.Null);
             
-            player.Message(new UiMessageServerToSingleClientMessage
+            player.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = player,
                 Content = stream.ToArray(),
@@ -51,7 +51,7 @@ namespace Uchu.World.Social
             
             writer.Write((byte) Amf3Type.Null);
 
-            player.Message(new UiMessageServerToSingleClientMessage
+            player.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = player,
                 Content = stream.ToArray(),
@@ -88,7 +88,7 @@ namespace Uchu.World.Social
 
             writer.Write((byte) Amf3Type.Null);
             
-            player.Message(new UiMessageServerToSingleClientMessage
+            player.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = player,
                 Content = stream.ToArray(),
@@ -110,7 +110,7 @@ namespace Uchu.World.Social
             
             writer.Write((byte) Amf3Type.Null);
             
-            player.Message(new UiMessageServerToSingleClientMessage
+            player.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = player,
                 Content = stream.ToArray(),
@@ -130,7 +130,7 @@ namespace Uchu.World.Social
             writer.Write((byte) (value ? Amf3Type.True : Amf3Type.False));
             writer.Write((byte) Amf3Type.Null);
             
-            player.Message(new UiMessageServerToSingleClientMessage
+            player.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = player,
                 Content = stream.ToArray(),
@@ -152,7 +152,7 @@ namespace Uchu.World.Social
             
             writer.Write((byte) Amf3Type.Null);
             
-            @this.Message(new UiMessageServerToSingleClientMessage
+            @this.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = @this,
                 Content = stream.ToArray(),
@@ -202,7 +202,7 @@ namespace Uchu.World.Social
 
             writer.Write((byte) Amf3Type.Null);
             
-            @this.Message(new UiMessageServerToSingleClientMessage
+            @this.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = @this,
                 Content = stream.ToArray(),
@@ -217,7 +217,7 @@ namespace Uchu.World.Social
 
             writer.Write((byte) Amf3Type.Null);
             
-            @this.Message(new UiMessageServerToSingleClientMessage
+            @this.Message(new UIMessageServerToSingleClientMessage
             {
                 Associate = @this,
                 Content = stream.ToArray(),

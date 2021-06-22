@@ -1,16 +1,10 @@
-using RakDotNet.IO;
-
 namespace Uchu.World
 {
-    public class SetGravityScaleMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.SetGravityScale;
-
-        public float Scale { get; set; }
-
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write(Scale);
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct SetGravityScaleMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.SetGravityScale;
+		public float Scale { get; set; }
+	}
 }

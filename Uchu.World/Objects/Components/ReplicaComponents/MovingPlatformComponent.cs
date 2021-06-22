@@ -4,13 +4,11 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using InfectedRose.Luz;
-using RakDotNet.IO;
-using Uchu.Core;
 using Timer = System.Timers.Timer;
 
 namespace Uchu.World
 {
-    public class MovingPlatformComponent : ReplicaComponent
+    public class MovingPlatformComponent : StructReplicaComponent<MovingPlatformSerialization,MovingPlatformSerialization>
     {
         /// <summary>
         ///     Current timer.
@@ -121,77 +119,50 @@ namespace Uchu.World
             });
         }
 
-        public override void Construct(BitWriter writer) 
+        /// <summary>
+        /// Creates the Construct packet for the replica component.
+        /// </summary>
+        /// <returns>The Construct packet for the replica component.</returns>
+        public override MovingPlatformSerialization GetConstructPacket()
         {
-            Serialize(writer, true);
-        }
-
-        public override void Serialize(BitWriter writer)
-        {
-            Serialize(writer, false);
-        }
-        
-        public void Serialize(BitWriter writer,bool includePath)
-        {
-            writer.WriteBit(true);
-
-            var hasPath = includePath && PathName != null;
-
-            writer.WriteBit(hasPath);
-
-            if (hasPath)
-            {
-                writer.WriteBit(true);
-                writer.Write((ushort) PathName.Length);
-                writer.WriteString(PathName, PathName.Length, true);
-                writer.Write(PathStart);
-                writer.WriteBit(false);
-            }
-
-            var hasPlatform = Type != PlatformType.None;
-
-            writer.WriteBit(hasPlatform);
-
-            if (!hasPlatform) return;
-
-            writer.Write((uint) Type);
-
+            var packet = base.GetConstructPacket();
+            packet.UnknownFlag1 = true;
+            packet.HasPath = (PathName != null);
+            packet.UnknownFlag2 = false;
             switch (Type)
             {
                 case PlatformType.None:
                     break;
-
                 case PlatformType.Mover:
-                    writer.WriteBit(true);
-
-                    writer.Write((uint) State);
-
-                    writer.Write(-1);
-                    writer.WriteBit(false);
-                    writer.WriteBit(CurrentWaypointIndex != 0);
-                    writer.Write<float>(0);
-
-                    writer.Write(TargetPosition);
-
-                    writer.Write(CurrentWaypointIndex);
-                    writer.Write(NextWaypointIndex);
-
-                    writer.Write(IdleTimeElapsed);
-                    writer.Write<uint>(0);
+                    packet.UnknownFlag3 = true;
+                    packet.UnknownInt = -1;
+                    packet.UnknownFlag5 = false;
+                    packet.NotAtBeginning = (CurrentWaypointIndex != 0);
+                    packet.UnknownFloat = 0;
+                    packet.UnknownUint = 0;
                     break;
 
                 case PlatformType.SimpleMover:
-                    writer.WriteBit(true);
-                    writer.WriteBit(true);
-
-                    writer.Write(TargetPosition);
-                    writer.Write(TargetRotation);
-
-                    writer.WriteBit(false);
+                    packet.UnknownFlag3 = true;
+                    packet.UnknownFlag4 = true;
+                    packet.UnknownFlag6 = true;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            return packet;
+        }
+        
+        /// <summary>
+        /// Creates the Serialize packet for the replica component.
+        /// </summary>
+        /// <returns>The Serialize packet for the replica component.</returns>
+        public override MovingPlatformSerialization GetSerializePacket()
+        {
+            var packet = this.GetConstructPacket();
+            packet.HasPath = false;
+            return packet;
         }
 
         public void Stop()

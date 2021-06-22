@@ -1,39 +1,20 @@
 using System.Numerics;
-using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class TeleportMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.Teleport;
-
-        public bool NoGravity { get; set; }
-
-        public bool IgnoreY { get; set; } = true;
-
-        public bool SetRotation { get; set; }
-
-        public bool SkipAllChecks { get; set; }
-
-        public Vector3 Position { get; set; }
-
-        public bool UseNavMesh { get; set; }
-
-        public Quaternion Rotation { get; set; }
-
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.WriteBit(IgnoreY);
-            writer.WriteBit(SetRotation);
-            writer.WriteBit(SkipAllChecks);
-
-            writer.Write(Position);
-
-            writer.WriteBit(UseNavMesh);
-            writer.WriteBit(NoGravity);
-
-            writer.Write(Rotation);
-
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct TeleportMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.Teleport;
+		public bool IgnoreY { get; set; }
+		public bool SetRotation { get; set; }
+		public bool SkipAllChecks { get; set; }
+		public Vector3 Position { get; set; }
+		public bool UseNavmesh { get; set; }
+		[Default]
+		[NiQuaternion]
+		public Quaternion Rotation { get; set; }
+	}
 }

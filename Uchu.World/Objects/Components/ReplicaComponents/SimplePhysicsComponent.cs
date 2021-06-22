@@ -1,9 +1,8 @@
 using System.Numerics;
-using RakDotNet.IO;
 
 namespace Uchu.World
 {
-    public class SimplePhysicsComponent : ReplicaComponent
+    public class SimplePhysicsComponent : StructReplicaComponent<SimplePhysicsConstruct,SimplePhysicsSerialization>
     {
         public bool HasPosition { get; set; } = true;
         
@@ -19,31 +18,30 @@ namespace Uchu.World
 
         public override ComponentId Id => ComponentId.SimplePhysicsComponent;
 
-        public override void Construct(BitWriter writer)
+        /// <summary>
+        /// Creates the Construct packet for the replica component.
+        /// </summary>
+        /// <returns>The Construct packet for the replica component.</returns>
+        public override SimplePhysicsConstruct GetConstructPacket()
         {
-            writer.WriteBit(false);
-            writer.Write(0);
-
-            Serialize(writer);
+            var packet = base.GetConstructPacket();
+            packet.UnknownFlag1 = false;
+            packet.UnknownFloat = 0;
+            packet.Position = Transform.Position;
+            packet.Rotation = Transform.Rotation;
+            return packet;
         }
-
-        public override void Serialize(BitWriter writer)
+        
+        /// <summary>
+        /// Creates the Serialize packet for the replica component.
+        /// </summary>
+        /// <returns>The Serialize packet for the replica component.</returns>
+        public override SimplePhysicsSerialization GetSerializePacket()
         {
-            if (writer.Flag(HasVelocity))
-            {
-                writer.Write(LinearVelocity);
-                writer.Write(AngularVelocity);
-            }
-
-            if (writer.Flag(HasAirSpeed))
-            {
-                writer.Write(AirSpeed);
-            }
-
-            if (!writer.Flag(HasPosition)) return;
-            
-            writer.Write(Transform.Position);
-            writer.Write(Transform.Rotation);
+            var packet = base.GetSerializePacket();
+            packet.Position = Transform.Position;
+            packet.Rotation = Transform.Rotation;
+            return packet;
         }
     }
 }

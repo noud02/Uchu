@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using RakDotNet.IO;
 using Uchu.Core.Client;
 using Uchu.World.Client;
 using Uchu.World.Systems.AI;
@@ -10,7 +8,7 @@ using Uchu.World.Systems.Behaviors;
 
 namespace Uchu.World
 {
-    public class BaseCombatAiComponent : ReplicaComponent
+    public class BaseCombatAiComponent : StructReplicaComponent<BaseCombatAISerialization,BaseCombatAISerialization>
     {
         public bool PerformingAction { get; set; }
 
@@ -117,21 +115,6 @@ namespace Uchu.World
             Cooldown -= delta;
 
             return Task.CompletedTask;
-        }
-
-        public override void Construct(BitWriter writer)
-        {
-            Serialize(writer);
-        }
-
-        public override void Serialize(BitWriter writer)
-        {
-            writer.WriteBit(PerformingAction);
-
-            if (!PerformingAction) return;
-
-            writer.Write((uint) Action);
-            writer.Write(Target);
         }
 
         public GameObject[] SeekValidTargets()

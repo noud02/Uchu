@@ -11,7 +11,7 @@ using Uchu.World.Client;
 
 namespace Uchu.World
 {
-    public class TriggerComponent : ReplicaComponent
+    public class TriggerComponent : StructReplicaComponent<TriggerSerialize>
     {
         public Trigger Trigger { get; private set; }
         
@@ -282,19 +282,19 @@ namespace Uchu.World
                 physicsComponent.EffectDirection = direction;
             }
         }
-
-        public override void Construct(BitWriter writer)
+        
+        /// <summary>
+        /// Creates the packet for the replica component.
+        /// </summary>
+        /// <returns>The packet for the replica component.</returns>
+        public override TriggerSerialize GetPacket()
         {
-            Serialize(writer);
-        }
-
-        public override void Serialize(BitWriter writer)
-        {
-            var hasId = Trigger != default;
-
-            writer.WriteBit(hasId);
-
-            if (hasId) writer.Write(Trigger.Id);
+            var packet = base.GetPacket();
+            if (Trigger != default)
+            {
+                packet.TriggerId = Trigger.Id;
+            }
+            return packet;
         }
     }
 }

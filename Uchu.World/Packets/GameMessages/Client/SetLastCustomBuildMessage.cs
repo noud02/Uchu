@@ -1,17 +1,13 @@
-using RakDotNet.IO;
 using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class SetLastCustomBuildMessage : ClientGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.SetLastCustomBuild;
-
-        public string Tokens { get; set; }
-        
-        public override void Deserialize(BitReader reader)
-        {
-            Tokens = reader.ReadString((int) reader.Read<uint>(), true);
-        }
-    }
+	[ClientGameMessagePacketStruct]
+	public struct SetLastCustomBuildMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.SetLastCustomBuild;
+		[Wide]
+		public string Tokens { get; set; }
+	}
 }

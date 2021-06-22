@@ -1,16 +1,10 @@
-using RakDotNet.IO;
-
 namespace Uchu.World
 {
-    public class TeamSetLeaderMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.TeamSetLeader;
-
-        public Player NewLeader { get; set; }
-
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write(NewLeader.Id);
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct TeamSetLeaderMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.TeamSetLeader;
+		public GameObject NewLeader { get; set; }
+	}
 }

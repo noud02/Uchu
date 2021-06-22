@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using RakDotNet;
 using Uchu.Core;
@@ -24,11 +25,11 @@ namespace Uchu.World.Handlers
             physics.IsOnGround = packet.IsOnGround;
             physics.NegativeAngularVelocity = packet.NegativeAngularVelocity;
 
-            physics.HasVelocity = packet.HasVelocity;
+            physics.HasVelocity = (packet.Position != Vector3.Zero);
 
             physics.Velocity = packet.Velocity;
 
-            physics.HasAngularVelocity = packet.HasAngularVelocity;
+            physics.HasAngularVelocity = (packet.AngularVelocity != Vector3.Zero);
 
             physics.AngularVelocity = packet.AngularVelocity;
 

@@ -73,7 +73,7 @@ namespace Uchu.World
                 BuildArea = BasePlate,
                 StartPosition = Transform.Position,
                 
-                SourceBag = (int) item.Inventory.InventoryType,
+                SourceBag = item.Inventory.InventoryType,
                 Source = item,
                 SourceLot = item.Lot,
                 SourceType = 8, // TODO: find out how to get this

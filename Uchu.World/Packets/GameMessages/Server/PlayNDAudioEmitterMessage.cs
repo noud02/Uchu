@@ -3,38 +3,18 @@ using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class PlayNDAudioEmitterMessage : ServerGameMessage
+    [ServerGameMessagePacketStruct]
+    public struct PlayNDAudioEmitterMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.PlayNDAudioEmitter;
-        public long NDAudioCallbackMessageData = 0;
-        public long NDAudioEmitterID = 0;
-        public string NDAudioEventGUID = "";
-        public string NDAudioMetaEventName = "";
-        public bool Result = false;
-        ObjectId TargetObjectIDForNDAudioCallbackMessages = new ObjectId(0);
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write(NDAudioCallbackMessageData != 0);
-            if (NDAudioCallbackMessageData != 0)
-            {
-                writer.Write(NDAudioCallbackMessageData);
-            }
-
-            writer.Write(NDAudioEmitterID != 0);
-            if (NDAudioEmitterID != 0)
-            {
-                writer.Write(NDAudioEmitterID);
-            }
-
-            writer.Write((uint)NDAudioEventGUID.Length);
-            writer.WriteString(NDAudioEventGUID, NDAudioEventGUID.Length);
-
-            writer.Write((uint)NDAudioMetaEventName.Length);
-            writer.WriteString(NDAudioMetaEventName, NDAudioMetaEventName.Length);
-
-            writer.WriteBit(Result);
-
-            writer.Write(val: (ulong)TargetObjectIDForNDAudioCallbackMessages);
-        }
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.PlayNDAudioEmitter;
+        [Default]
+        public long NDAudioCallbackMessageData { get; set; }
+        [Default]
+        public long NDAudioEmitterID { get; set; }
+        public string NDAudioEventGUID { get; set; }
+        public string NDAudioMetaEventName { get; set; }
+        public bool Result { get; set; }
+        public ObjectId TargetObjectIDForNDAudioCallbackMessages { get; set; }
     }
 }

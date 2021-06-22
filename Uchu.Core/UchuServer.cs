@@ -511,9 +511,19 @@ namespace Uchu.Core
 
                 try
                 {
-                    var packet = handler.NewPacket();
-                    reader.Read(packet);
-                    await InvokeHandlerAsync(handler, packet, connection).ConfigureAwait(false);
+                    if (handler.PacketType.IsValueType)
+                    {
+                        // Struct-based packet.
+                        var packet = StructPacketParser.ReadPacket(handler.PacketType, reader.BaseStream, null);
+                        await InvokeHandlerAsync(handler, packet, connection).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        // IPacket-based packet.
+                        var packet = handler.NewPacket();
+                        reader.Read(packet);
+                        await InvokeHandlerAsync(handler, packet, connection).ConfigureAwait(false);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -696,7 +706,7 @@ namespace Uchu.Core
         /// </summary>
         /// <param name="handler">The handler to invoke</param>
         /// <param name="endPoint">The endpoint to send a response to</param>
-        private static async Task InvokeHandlerAsync(Handler handler, IPacket packet, IRakConnection endPoint)
+        private static async Task InvokeHandlerAsync(Handler handler, object packet, IRakConnection endPoint)
         {
             var task = handler.Info.ReturnType == typeof(Task);
             

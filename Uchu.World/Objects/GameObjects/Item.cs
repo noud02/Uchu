@@ -345,14 +345,14 @@ namespace Uchu.World
         {
             if (Owner is Player player && Inventory != null)
             {
-                player.Message(new AddItemToInventoryMessage
+                player.Message(new AddItemToInventoryClientSyncMessage
                 {
                     Associate = player,
                     Item = this,
                     ItemLot = Lot,
                     Delta = Count,
                     Slot = (int) Slot,
-                    InventoryType = (int) Inventory.InventoryType,
+                    InventoryType = Inventory.InventoryType,
                     ShowFlyingLoot = showFlyingLoot,
                     TotalItems = Count,
                     ExtraInfo = Settings,
@@ -369,14 +369,14 @@ namespace Uchu.World
         {
             if (Owner is Player player && Inventory != null)
             {
-                player.Message(new AddItemToInventoryMessage
+                player.Message(new AddItemToInventoryClientSyncMessage()
                 {
                     Associate = player,
                     Item = this,
                     ItemLot = Lot,
                     Delta = count - Count,
                     TotalItems = count,
-                    InventoryType = (int) Inventory.InventoryType,
+                    InventoryType = Inventory.InventoryType,
                     ExtraInfo = Settings,
                     Slot = (int) Slot,
                     ShowFlyingLoot = count != default,
@@ -393,7 +393,7 @@ namespace Uchu.World
         {
             if (Owner is Player player && Inventory != null)
             {
-                var message = new RemoveItemToInventoryMessage
+                var message = new RemoveItemFromInventoryMessage
                 {
                     Associate = player,
                     Item = this,

@@ -1,28 +1,16 @@
-using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class RespondToMissionMessage : ClientGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.RespondToMission;
-
-        public int MissionId { get; set; }
-
-        public Player Player { get; set; }
-
-        public GameObject Receiver { get; set; }
-
-        public Lot RewardItem { get; set; }
-
-        public override void Deserialize(BitReader reader)
-        {
-            MissionId = reader.Read<int>();
-
-            Player = reader.ReadGameObject<Player>(Associate.Zone);
-
-            Receiver = reader.ReadGameObject(Associate.Zone);
-
-            RewardItem = reader.ReadBit() ? reader.Read<int>() : -1;
-        }
-    }
+	[ClientGameMessagePacketStruct]
+	public struct RespondToMissionMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.RespondToMission;
+		public int MissionId { get; set; }
+		public GameObject PlayerId { get; set; }
+		public GameObject Receiver { get; set; }
+		[Default]
+		public Lot RewardItem { get; set; }
+	}
 }

@@ -1,15 +1,12 @@
-﻿using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class ClientExitTamingMinigameMessage : ClientGameMessage
-    {
-        public override GameMessageId GameMessageId { get; } = GameMessageId.ClientExitTamingMinigame;
-
-        private bool bVoluntaryExit = true;
-        public override void Deserialize(BitReader reader)
-        {
-            bVoluntaryExit = reader.ReadBit();
-        }
-    }
+	[ClientGameMessagePacketStruct]
+	public struct ClientExitTamingMinigameMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.ClientExitTamingMinigame;
+		public bool VoluntaryExit { get; set; }
+	}
 }

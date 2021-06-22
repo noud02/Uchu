@@ -1,7 +1,9 @@
 namespace Uchu.World
 {
-    public class RequestPlatformResyncMessage : ClientGameMessage
+    [ClientGameMessagePacketStruct]
+    public struct RequestPlatformResyncMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.RequestPlatformResync;
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.RequestPlatformResync;
     }
 }

@@ -1,16 +1,13 @@
-using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class ChangeObjectWorldStateMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.ChangeObjectWorldState;
-        
-        public ObjectWorldState State { get; set; }
-        
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write((int) State);
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct ChangeObjectWorldStateMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.ChangeObjectWorldState;
+		[Default]
+		public ObjectWorldState State { get; set; }
+	}
 }

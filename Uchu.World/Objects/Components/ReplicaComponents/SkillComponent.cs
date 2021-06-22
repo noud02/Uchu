@@ -197,7 +197,7 @@ namespace Uchu.World
             if (!context.FoundTarget)
                 return 0;
 
-            Zone.BroadcastMessage(new EchoStartSkillMessage
+            Zone.BroadcastMessage(new EchoStartSkillMessage()
             {
                 Associate = GameObject,
                 CastType = 0,
@@ -233,7 +233,7 @@ namespace Uchu.World
             var syncId = ClaimSyncId();
             var context = tree.Serialize(GameObject, writer, skillId, syncId, Transform.Position, target);
 
-            Zone.BroadcastMessage(new EchoStartSkillMessage
+            Zone.BroadcastMessage(new EchoStartSkillMessage()
             {
                 Associate = GameObject,
                 CastType = 0,
@@ -285,7 +285,7 @@ namespace Uchu.World
                 
                 HandledSkills[message.SkillHandle] = context;
 
-                Zone.ExcludingMessage(new EchoStartSkillMessage
+                Zone.ExcludingMessage(new EchoStartSkillMessage()
                 {
                     Associate = GameObject,
                     CasterLatency = message.CasterLatency,

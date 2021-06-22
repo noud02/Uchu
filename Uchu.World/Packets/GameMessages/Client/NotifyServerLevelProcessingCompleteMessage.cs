@@ -1,7 +1,9 @@
 ﻿namespace Uchu.World
 {
-    public class NotifyServerLevelProcessingCompleteMessage : ClientGameMessage
+    [ClientGameMessagePacketStruct]
+    public struct NotifyServerLevelProcessingCompleteMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.NotifyServerLevelProcessingComplete;
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.NotifyServerLevelProcessingComplete;
     }
 }

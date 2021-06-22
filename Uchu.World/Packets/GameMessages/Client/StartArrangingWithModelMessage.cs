@@ -3,17 +3,11 @@ using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class StartArrangingWithModelMessage : ClientGameMessage
+    [ClientGameMessagePacketStruct]
+    public struct StartArrangingWithModelMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.StartArrangingWithModel;
-
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.StartArrangingWithModel;
         public Item Item { get; set; }
-        
-        public override void Deserialize(BitReader reader)
-        {
-            Item = reader.ReadGameObject<Item>(Associate.Zone);
-            
-            Logger.Information($"MODEL: {Item} ; REM: {reader.BaseStream.Length - reader.BaseStream.Position}");
-        }
     }
 }

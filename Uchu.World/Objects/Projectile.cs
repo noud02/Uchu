@@ -42,7 +42,7 @@ namespace Uchu.World
             tree.Deserialize(Owner, reader, target: target, castType: SkillCastType.OnUse);
             tree.Use();
             
-            Zone.BroadcastMessage(new DoClientProjectileImpact
+            Zone.BroadcastMessage(new DoClientProjectileImpactMessage()
             {
                 Associate = Owner,
                 Data = data,
@@ -77,7 +77,7 @@ namespace Uchu.World
             
             tree.Execute();
             
-            Zone.BroadcastMessage(new DoClientProjectileImpact
+            Zone.BroadcastMessage(new DoClientProjectileImpactMessage()
             {
                 Associate = Owner,
                 Data = stream.ToArray(),

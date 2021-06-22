@@ -96,7 +96,7 @@ namespace Uchu.StandardScripts.BlockYard
                     DirectionRelativeAngleXz = 0.00f,
                     DirectionRelativeAngleY = 0.00f,
                     DirectionRelativeForce = 0.00f,
-                    KillType = 1,
+                    KillType = KillType.Silent,
                     Killer = default,
                     LootOwner = default
                 });
@@ -136,19 +136,28 @@ namespace Uchu.StandardScripts.BlockYard
                     {
                         Name = "TornadoDebris",
                         EffectType = "debrisOn",
-                        Associate = item
+                        Associate = item,
+                        Priority = 1,
+                        Scale = 1,
+                        Serialize = true,
                     });
                     Player.Message(new PlayFXEffectMessage
                     {
                         Name = "TornadoVortex",
                         EffectType = "VortexOn",
-                        Associate = item
+                        Associate = item,
+                        Priority = 1,
+                        Scale = 1,
+                        Serialize = true,
                     });
                     Player.Message(new PlayFXEffectMessage
                     {
                         Name = "silhouette",
                         EffectType = "onSilhouette",
-                        Associate = item
+                        Associate = item,
+                        Priority = 1,
+                        Scale = 1,
+                        Serialize = true,
                     });
                 }
             }
@@ -183,7 +192,8 @@ namespace Uchu.StandardScripts.BlockYard
                     CantTurn = true,
                     CantUseItem = true,
                     CantEquip = true,
-                    CantInteract = true
+                    CantInteract = true,
+                    IgnoreImmunity = true,
                 }); // The animation handles movement
 
                 SpiderQueen.Transform.Rotate(new Quaternion { X = 0.0f, Y = -0.005077f, Z = 0.0f, W = 0.999f }); // Orientation for the animation to make sense
@@ -199,10 +209,10 @@ namespace Uchu.StandardScripts.BlockYard
                 Player.Message(new SetStatusImmunityMessage
                 {
                     Associate = SpiderQueen,
-                    state = ImmunityState.Push,
-                    bImmuneToSpeed = true,
-                    bImmuneToBasicAttack = true,
-                    bImmuneToDOT = true
+                    State = ImmunityState.Push,
+                    ImmuneToSpeed = true,
+                    ImmuneToBasicAttack = true,
+                    ImmuneToDOT = true
                 });
             }
         }
@@ -312,7 +322,7 @@ namespace Uchu.StandardScripts.BlockYard
                     DirectionRelativeAngleXz = 0.00f,
                     DirectionRelativeAngleY = 0.00f,
                     DirectionRelativeForce = 0.00f,
-                    KillType = 1,
+                    KillType = KillType.Silent,
                     Killer = default,
                     LootOwner = default
                 });

@@ -1,7 +1,9 @@
 namespace Uchu.World
 {
-    public class RequestResurrectMessage : ClientGameMessage
+    [ClientGameMessagePacketStruct]
+    public struct RequestResurrectMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.RequestResurrect;
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.RequestResurrect;
     }
 }

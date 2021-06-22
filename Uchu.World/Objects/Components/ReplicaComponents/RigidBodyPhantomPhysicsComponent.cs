@@ -1,21 +1,20 @@
-using RakDotNet.IO;
-
 namespace Uchu.World
 {
-    public class RigidBodyPhantomPhysicsComponent : ReplicaComponent
+    public class RigidBodyPhantomPhysicsComponent : StructReplicaComponent<RigidBodyPhantomPhysicsSerialization>
     {
         public override ComponentId Id => ComponentId.RigidBodyPhantomPhysicsComponent;
 
-        public override void Construct(BitWriter writer)
+        /// <summary>
+        /// Creates the packet for the replica component.
+        /// </summary>
+        /// <returns>The packet for the replica component.</returns>
+        public override RigidBodyPhantomPhysicsSerialization GetPacket()
         {
-            Serialize(writer);
-        }
-
-        public override void Serialize(BitWriter writer)
-        {
-            writer.WriteBit(true);
-            writer.Write(Transform.Position);
-            writer.Write(Transform.Rotation);
+            var packet = base.GetPacket();
+            packet.HasPosition = true;
+            packet.Position = Transform.Position;
+            packet.Rotation = Transform.Rotation;
+            return packet;
         }
     }
 }

@@ -1,13 +1,9 @@
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RakDotNet.IO;
 using Uchu.Physics;
 using Uchu.World;
 using Uchu.World.Scripting.Native;
-using Uchu.World.Systems.Behaviors;
 
 namespace Uchu.StandardScripts.General
 {
@@ -64,7 +60,7 @@ namespace Uchu.StandardScripts.General
                     {
                         Associate = gameObject,
                         Killer = player,
-                        KillType = 1
+                        KillType = KillType.Silent,
                     });
                     gameObject.GetComponent<DestructibleComponent>().Alive = false;
                 });

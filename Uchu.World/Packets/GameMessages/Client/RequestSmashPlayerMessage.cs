@@ -1,7 +1,9 @@
 namespace Uchu.World
 {
-    public class RequestSmashPlayerMessage : ClientGameMessage
+    [ClientGameMessagePacketStruct]
+    public struct RequestSmashPlayerMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.RequestSmashPlayer;
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.RequestSmashPlayer;
     }
 }

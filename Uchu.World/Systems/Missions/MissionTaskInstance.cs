@@ -204,7 +204,7 @@ namespace Uchu.World.Systems.Missions
             {
                 Associate = Mission.Player,
                 MissionId = Mission.MissionId,
-                TaskIndex = MissionTaskIndex,
+                TaskIndex = 1 << (MissionTaskIndex + 1),
                 Updates = new[] { (float)CurrentProgress }
             });
         }

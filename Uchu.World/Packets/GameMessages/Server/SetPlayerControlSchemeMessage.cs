@@ -1,25 +1,15 @@
-using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class SetPlayerControlSchemeMessage : ServerGameMessage
+    [ServerGameMessagePacketStruct]
+    public struct SetPlayerControlSchemeMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.SetPlayerControlScheme;
-        
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.SetPlayerControlScheme;
         public bool DelayCameraSwitchIfInCinematic { get; set; }
-        
         public bool SwitchCamera { get; set; }
-        
+        [Default]
         public int ControlScheme { get; set; }
-        
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.WriteBit(DelayCameraSwitchIfInCinematic);
-
-            writer.WriteBit(SwitchCamera);
-
-            if (writer.Flag(ControlScheme != 0))
-                writer.Write(ControlScheme);
-        }
     }
 }

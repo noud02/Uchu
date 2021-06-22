@@ -1,13 +1,10 @@
 using System.Linq;
 using System.Numerics;
-using RakDotNet.IO;
-using Uchu.Core;
-using Uchu.Physics;
 using Uchu.World.Client;
 
 namespace Uchu.World
 {
-    public class PhantomPhysicsComponent : ReplicaComponent
+    public class PhantomPhysicsComponent : StructReplicaComponent<PhantomPhysicsSerialization>
     {
         public override ComponentId Id => ComponentId.PhantomPhysicsComponent;
 
@@ -48,36 +45,19 @@ namespace Uchu.World
                 }
             });
         }
-
-        public override void Construct(BitWriter writer)
+        
+        /// <summary>
+        /// Creates the packet for the replica component.
+        /// </summary>
+        /// <returns>The packet for the replica component.</returns>
+        public override PhantomPhysicsSerialization GetPacket()
         {
-            Serialize(writer);
-        }
-
-        public override void Serialize(BitWriter writer)
-        {
-            if (writer.Flag(HasPosition))
-            {
-                writer.Write(Transform.Position);
-                writer.Write(Transform.Rotation);
-            }
-
-            writer.WriteBit(true);
-            
-            if (!writer.Flag(IsEffectActive)) return;
-
-            writer.Write((uint) EffectType);
-            writer.Write(EffectAmount);
-
-            if (writer.Flag(AffectedByDistance))
-            {
-                writer.Write(MinDistance);
-                writer.Write(MaxDistance);
-            }
-
-            if (!writer.Flag(EffectDirection != Vector3.Zero)) return;
-
-            writer.Write(EffectDirection * EffectAmount);
+            var packet = base.GetPacket();
+            packet.Position = Transform.Position;
+            packet.Rotation = Transform.Rotation;
+            packet.UnknownFlag = true;
+            packet.EffectDirectionScaled = EffectDirection * EffectAmount;
+            return packet;
         }
     }
 }

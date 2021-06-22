@@ -400,7 +400,7 @@ namespace Uchu.World
                     else
                     {
                         // Display item-bouncing-off-backpack animation
-                        ((Player) GameObject).Message(new NotifyRewardMailed
+                        ((Player) GameObject).Message(new NotifyRewardMailedMessage()
                         {
                             ObjectId = ObjectId.Standalone,
                             StartPoint = new Vector3(0, 0, 0),

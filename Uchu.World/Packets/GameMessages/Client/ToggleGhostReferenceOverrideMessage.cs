@@ -1,16 +1,12 @@
-using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class ToggleGhostReferenceOverrideMessage : ClientGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.ToggleGhostReferenceOverride;
-        
-        public bool Override { get; set; }
-
-        public override void Deserialize(BitReader reader)
-        {
-            Override = reader.ReadBit();
-        }
-    }
+	[ClientGameMessagePacketStruct]
+	public struct ToggleGhostReferenceOverrideMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.ToggleGhostReferenceOverride;
+		public bool Override { get; set; }
+	}
 }

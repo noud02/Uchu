@@ -1,35 +1,19 @@
-using RakDotNet.IO;
 using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class TeamAddPlayerMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.TeamAddPlayer;
-
-        public bool IsFreeTrail { get; set; }
-
-        public bool IsLocal { get; set; }
-
-        public bool NoLootOnDeath { get; set; }
-
-        public Player Player { get; set; }
-
-        public override void SerializeMessage(BitWriter writer)
-        {
-            if (writer.Flag(IsFreeTrail)) writer.WriteBit(IsFreeTrail);
-
-            if (writer.Flag(IsLocal)) writer.WriteBit(IsLocal);
-
-            if (writer.Flag(NoLootOnDeath)) writer.WriteBit(NoLootOnDeath);
-
-            writer.Write(Player.Id);
-
-            writer.WriteString(Player.Name, wide: true);
-
-            writer.WriteBit(false);
-
-            if (writer.Flag(Player.Zone.ZoneId != 0)) writer.Write((ushort) Player.Zone.ZoneId);
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct TeamAddPlayerMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.TeamAddPlayer;
+		public bool IsFreeTrial { get; set; }
+		public bool Local { get; set; }
+		public bool NoLootOnDeath { get; set; }
+		public Player Player { get; set; }
+		[Wide]
+		public string PlayerName { get; set; }
+		[Default]
+		public ZoneId ZoneId { get; set; }
+	}
 }

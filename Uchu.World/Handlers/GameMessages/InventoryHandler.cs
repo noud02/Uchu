@@ -59,7 +59,7 @@ namespace Uchu.World.Handlers.GameMessages
         }
 
         [PacketHandler]
-        public async Task RemoveItemHandler(RemoveItemToInventoryMessage message, Player player)
+        public async Task RemoveItemHandler(RemoveItemFromInventoryMessage message, Player player)
         {
             if (!message.Confirmed || message.Item == default)
                 return;

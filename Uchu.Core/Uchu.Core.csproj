@@ -24,6 +24,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\InfectedRose\InfectedRose.Core\InfectedRose.Core.csproj" />
+      <ProjectReference Include="..\InfectedRose\InfectedRose.Lvl\InfectedRose.Lvl.csproj" />
       <ProjectReference Include="..\RakDotNet\RakDotNet\RakDotNet.csproj" />
       <ProjectReference Include="..\Uchu.Api\Uchu.Api.csproj" />
       <ProjectReference Include="..\Uchu.Sso\Uchu.Sso.csproj" />

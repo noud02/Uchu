@@ -1,20 +1,18 @@
-using RakDotNet.IO;
-
 namespace Uchu.World
 {
-    public class ExhibitComponent : ReplicaComponent
+    public class ExhibitComponent : StructReplicaComponent<ExhibitSerialization>
     {
         public override ComponentId Id => ComponentId.ExhibitComponent;
 
-        public override void Construct(BitWriter writer)
+        /// <summary>
+        /// Creates the packet for the replica component.
+        /// </summary>
+        /// <returns>The packet for the replica component.</returns>
+        public override ExhibitSerialization GetPacket()
         {
-            Serialize(writer);
-        }
-
-        public override void Serialize(BitWriter writer)
-        {
-            writer.WriteBit(true);
-            writer.Write(GameObject.Lot);
+            var packet = base.GetPacket();
+            packet.ExhibitedLot = this.GameObject.Lot;
+            return packet;
         }
     }
 }

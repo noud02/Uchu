@@ -1,36 +1,19 @@
-﻿using RakDotNet.IO;
-using Uchu.Core;
-using Uchu.World;
-
 namespace Uchu.World
 {
-    public class SetStatusImmunityMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.SetStatusImmunity;
-
-        public ImmunityState state;
-        public bool bImmuneToBasicAttack = false;
-        public bool bImmuneToDOT = false;
-        public bool bImmuneToImaginationGain = false;
-        public bool bImmuneToImaginationLoss = false;
-        public bool bImmuneToInterrupt = false;
-        public bool bImmuneToKnockback = false;
-        public bool bImmuneToPullToPoint = false;
-        public bool bImmuneToQuickbuildInterrupt = false;
-        public bool bImmuneToSpeed = false;
-
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write((int)state);
-            writer.WriteBit(bImmuneToBasicAttack);
-            writer.WriteBit(bImmuneToDOT);
-            writer.WriteBit(bImmuneToImaginationGain);
-            writer.WriteBit(bImmuneToImaginationLoss);
-            writer.WriteBit(bImmuneToInterrupt);
-            writer.WriteBit(bImmuneToKnockback);
-            writer.WriteBit(bImmuneToPullToPoint);
-            writer.WriteBit(bImmuneToQuickbuildInterrupt);
-            writer.WriteBit(bImmuneToSpeed);
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct SetStatusImmunityMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.SetStatusImmunity;
+		public ImmunityState State { get; set; }
+		public bool ImmuneToBasicAttack { get; set; }
+		public bool ImmuneToDOT { get; set; }
+		public bool ImmuneToImaginationGain { get; set; }
+		public bool ImmuneToImaginationLoss { get; set; }
+		public bool ImmuneToInterrupt { get; set; }
+		public bool ImmuneToKnockback { get; set; }
+		public bool ImmuneToPullToPoint { get; set; }
+		public bool ImmuneToQuickbuildInterrupt { get; set; }
+		public bool ImmuneToSpeed { get; set; }
+	}
 }

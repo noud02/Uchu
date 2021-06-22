@@ -15,14 +15,14 @@ namespace Uchu.World
         [PacketHandler]
         public void ClientExitTamingMinigameHandler(ClientExitTamingMinigameMessage message, Player player)
         {
-            NotifyPetTamingMinigame msg = new NotifyPetTamingMinigame();
-            msg.notifyType = NotifyType.QUIT;
-            msg.PetID = (ObjectId)(ulong)0;
-            msg.PlayerTamingID = player.Id;
-            msg.bForceTeleport = false;
-            msg.petsDestPos = Vector3.Zero;
-            msg.teleRot = Quaternion.Identity;
-            msg.telePos = Vector3.Zero;
+            var msg = new NotifyPetTamingMinigameMessage();
+            msg.NotifyType = PetTamingNotifyType.Quit;
+            msg.PetId = (ObjectId)(ulong)0;
+            msg.PlayerTaming = player;
+            msg.ForceTeleport = false;
+            msg.PetDestinationPosition = Vector3.Zero;
+            msg.TeleportRotation = Quaternion.Identity;
+            msg.TeleportPosition = Vector3.Zero;
             msg.Associate = player;
             player.Message(msg);
         }

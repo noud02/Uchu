@@ -1,19 +1,14 @@
-using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class ModifyLegoScoreMessage : ServerGameMessage
-    {
-        public override GameMessageId GameMessageId => GameMessageId.ModifyLegoScore;
-
-        public long Score { get; set; }
-
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write(Score);
-
-            writer.WriteBit(true);
-            writer.Write(2);
-        }
-    }
+	[ServerGameMessagePacketStruct]
+	public struct ModifyLegoScoreMessage
+	{
+		public GameObject Associate { get; set; }
+		public GameMessageId GameMessageId => GameMessageId.ModifyLegoScore;
+		public long Score { get; set; }
+		[Default]
+		public LootType SourceType { get; set; }
+	}
 }

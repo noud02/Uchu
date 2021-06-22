@@ -1,13 +1,9 @@
-using RakDotNet.IO;
-
 namespace Uchu.World
 {
-    public class OpenVendorWindowMessage : ServerGameMessage
+    [ServerGameMessagePacketStruct]
+    public struct OpenVendorWindowMessage
     {
-        public override GameMessageId GameMessageId => GameMessageId.VendorOpenWindow;
-        
-        public override void SerializeMessage(BitWriter writer)
-        {
-        }
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.VendorOpenWindow;
     }
 }

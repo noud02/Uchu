@@ -44,5 +44,29 @@ namespace Uchu.Core
             
             @this.Send(stream.ToArray());
         }
+        
+        /// <summary>
+        /// Sends a struct (packet) to a given connection.
+        /// </summary>
+        /// <param name="this">RakNet connection to send over.</param>
+        /// <param name="packet">Packet to send.</param>
+        /// <typeparam name="T">Type of the packet.</typeparam>
+        /// <exception cref="ArgumentNullException">Connection is null.</exception>
+        public static void Send<T>(this IRakConnection @this, T packet) where T : struct
+        {
+            if (@this == null)
+                throw new ArgumentNullException(nameof(@this), 
+                    ResourceStrings.RakConnectionExtensions_Send_ConnectionNullException);
+            Logger.Debug($"Sending {packet}");
+            
+            try
+            {
+                @this.Send(StructPacketParser.WritePacket(packet).ToArray());
+            }
+            catch (IOException e)
+            {
+                Logger.Error(e);
+            }
+        }
     }
 }

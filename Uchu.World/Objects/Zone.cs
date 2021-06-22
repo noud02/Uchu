@@ -308,17 +308,12 @@ namespace Uchu.World
 
         #region Messages
 
-        public void SelectiveMessage(IGameMessage message, IEnumerable<Player> players)
-        {
-            foreach (var player in players) player.Message(message);
-        }
-
-        public void ExcludingMessage(IGameMessage message, Player excluded)
+        public void ExcludingMessage<T>(T message, Player excluded) where T : struct
         {
             foreach (var player in Players.Where(p => p != excluded)) player.Message(message);
         }
-
-        public void BroadcastMessage(IGameMessage message)
+        
+        public void BroadcastMessage<T>(T message) where T : struct
         {
             foreach (var player in Players) player.Message(message);
         }

@@ -5,7 +5,7 @@ using Uchu.Physics;
 
 namespace Uchu.World
 {
-    public class SwitchComponent : ReplicaComponent
+    public class SwitchComponent : StructReplicaComponent<SwitchSerialize>
     {
         public bool State { get; set; }
 
@@ -133,16 +133,6 @@ namespace Uchu.World
             GameObject.Serialize(GameObject);
             
             await OnDeactivated.InvokeAsync();
-        }
-        
-        public override void Construct(BitWriter writer)
-        {
-            Serialize(writer);
-        }
-
-        public override void Serialize(BitWriter writer)
-        {
-            writer.WriteBit(State);
         }
     }
 }

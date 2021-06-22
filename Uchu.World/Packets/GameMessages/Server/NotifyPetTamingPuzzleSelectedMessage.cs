@@ -6,19 +6,11 @@ using Uchu.Core;
 
 namespace Uchu.World
 {
-    public class NotifyPetTamingPuzzleSelectedMessage : ServerGameMessage
+    [ServerGameMessagePacketStruct]
+    public struct NotifyPetTamingPuzzleSelectedMessage
     {
-        public override GameMessageId GameMessageId { get; } = GameMessageId.NotifyPetTamingPuzzleSelected;
-        
-        public List<Brick> Bricks { get; set; }
-        public override void SerializeMessage(BitWriter writer)
-        {
-            writer.Write((uint) Bricks.Count);
-            foreach (var item in Bricks)
-            {
-                writer.Write((uint) item.DesignID);
-                writer.Write((uint) item.DesignPart.Material);
-            }
-        }
+        public GameObject Associate { get; set; }
+        public GameMessageId GameMessageId => GameMessageId.NotifyPetTamingPuzzleSelected;
+        public Brick[] Bricks { get; set; }
     }
 }
