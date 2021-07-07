@@ -189,8 +189,9 @@ namespace Uchu.StandardScripts.BlockYard
                 SpiderQueen.Transform.Rotate(new Quaternion { X = 0.0f, Y = -0.005077f, Z = 0.0f, W = 0.999f }); // Orientation for the animation to make sense
 
                 SpiderQueen.Animate("withdraw");
-
-                var Animation = ClientCache.GetTable<Animations>().FirstOrDefault(
+                
+                using var cdClient = new CdClientContext();
+                var Animation = cdClient.AnimationsTable.FirstOrDefault(
                     a => a.Animationname == "withdraw"
                 );
 

@@ -325,7 +325,7 @@ namespace Uchu.World
 
                 instance.Name = name;
 
-                var obj = ClientCache.GetTable<Core.Client.Objects>().FirstOrDefault(o => o.Id == lot);
+                var obj = ClientCache.Find<Core.Client.Objects>(lot);
                 instance.ClientName = obj?.Name;
 
                 instance.Spawner = spawner;
@@ -443,9 +443,7 @@ namespace Uchu.World
             // Collect all the components on this object
             //
 
-            var registryComponents = ClientCache.GetTable<ComponentsRegistry>().Where(
-                r => r.Id == levelObject.Lot
-            ).ToArray();
+            var registryComponents = ClientCache.FindAll<ComponentsRegistry>(levelObject.Lot);
 
             //
             // Select all the none networked components on this object

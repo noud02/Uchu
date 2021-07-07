@@ -202,7 +202,7 @@ namespace Uchu.World
                 
             }
 
-            int? ZoneControlLot = ClientCache.GetTable<ZoneTable>().FirstOrDefault(o => o.ZoneID == this.ZoneId.Id).ZoneControlTemplate;
+            var ZoneControlLot = ClientCache.Find<ZoneTable>(this.ZoneId.Id).ZoneControlTemplate;
 
             int Lot = ZoneControlLot ??= 2365;
 

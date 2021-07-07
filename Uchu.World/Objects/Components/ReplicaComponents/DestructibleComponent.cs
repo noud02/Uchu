@@ -57,10 +57,7 @@ namespace Uchu.World
                 GameObject.Layer = StandardLayer.Smashable;
 
                 var entry = GameObject.Lot.GetComponentId(ComponentId.DestructibleComponent);
-
-                var cdClientComponent = (await ClientCache.GetTableAsync<Core.Client.DestructibleComponent>()).FirstOrDefault(
-                    c => c.Id == entry
-                );
+                var cdClientComponent = (await ClientCache.FindAsync<Core.Client.DestructibleComponent>(entry));
 
                 if (cdClientComponent == default)
                     Logger.Error($"{GameObject} has a corrupt Destructible Component of id: {entry}");

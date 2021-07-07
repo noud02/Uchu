@@ -19,7 +19,7 @@ namespace Uchu.World.Filters
         public void Initialize(Player player)
         {
             Player = player;
-            var zone = ClientCache.GetTable<ZoneTable>().FirstOrDefault(z => z.ZoneID == (int) Player.Zone.ZoneId);
+            var zone = ClientCache.Find<ZoneTable>((int) Player.Zone.ZoneId);
 
             Distance = zone?.Ghostdistance ?? 500;
         }

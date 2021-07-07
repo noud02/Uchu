@@ -21,8 +21,7 @@ namespace Uchu.StandardScripts.General
                     {
                         var launchpad = message.Associate.GetComponent<RocketLaunchpadComponent>();
                         var id = launchpad.GameObject.Lot.GetComponentId(ComponentId.RocketLaunchComponent);
-                        var launchpadComponent = (await ClientCache.GetTableAsync<RocketLaunchpadControlComponent>())
-                            .First(r => r.Id == id);
+                        var launchpadComponent = await ClientCache.FindAsync<RocketLaunchpadControlComponent>(id);
 
                         if (launchpadComponent.TargetZone != null)
                         {

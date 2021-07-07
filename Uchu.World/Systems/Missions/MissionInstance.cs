@@ -297,9 +297,7 @@ namespace Uchu.World.Systems.Missions
         /// </summary>
         private async Task LoadTemplateAsync()
         {
-            var mission = (await ClientCache.GetTableAsync<Core.Client.Missions>()).First(
-                m => m.Id == MissionId
-            );
+            var mission = await ClientCache.FindAsync<Core.Client.Missions>(MissionId);
 
             PrerequisiteMissions = mission.PrereqMissionID;
             IsMission = mission.IsMission ?? true;
@@ -356,11 +354,9 @@ namespace Uchu.World.Systems.Missions
             // Optional increment for vault inventory size
             RewardBankInventory = mission.Rewardbankinventory ?? 0;
 
-            var tasks = (await ClientCache.GetTableAsync<MissionTasks>()).Where(
-                t => t.Id == MissionId
-            ).ToArray();
 
             // Load all the tasks for this mission
+            var tasks = await ClientCache.MissionTasksWithMissionIdCacheTable.FindAllAsync<MissionTasks>(MissionId);
             Tasks = new List<MissionTaskInstance>();
 
             var index = 0;

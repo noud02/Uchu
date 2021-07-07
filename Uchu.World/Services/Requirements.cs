@@ -107,10 +107,7 @@ namespace Uchu.World.Services
         
         public static async Task<bool> CheckPreconditionAsync(int id, Player player)
         {
-            var precondition = (await ClientCache.GetTableAsync<Preconditions>()).FirstOrDefault(
-                p => p.Id == id
-            );
-
+            var precondition = await ClientCache.FindAsync<Preconditions>(id);
             if (precondition?.Type == default)
             {
                 Logger.Error($"Invalid precondition: {id}!");

@@ -88,8 +88,7 @@ namespace Uchu.World
                         // Find physics asset path from cdclient
                         var phantomPhysicsComponentId =
                             GameObject.Lot.GetComponentId(ComponentId.PhantomPhysicsComponent);
-                        var cdcComponent = ClientCache.GetTable<Core.Client.PhysicsComponent>()
-                            .FirstOrDefault(r => r.Id == phantomPhysicsComponentId);
+                        var cdcComponent = ClientCache.Find<Core.Client.PhysicsComponent>(phantomPhysicsComponentId);
                         var assetPath = cdcComponent?.Physicsasset;
 
                         // Give physics object correct dimensions
@@ -104,8 +103,7 @@ namespace Uchu.World
                         // Find physics asset path from cdclient
                         var phantomPhysicsComponentId =
                             GameObject.Lot.GetComponentId(ComponentId.PhantomPhysicsComponent);
-                        var cdcComponent = ClientCache.GetTable<Core.Client.PhysicsComponent>()
-                            .FirstOrDefault(r => r.Id == phantomPhysicsComponentId);
+                        var cdcComponent = ClientCache.Find<Core.Client.PhysicsComponent>(phantomPhysicsComponentId);
                         var assetPath = cdcComponent?.Physicsasset;
 
                         // Give physics object correct dimensions

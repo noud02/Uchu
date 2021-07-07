@@ -101,7 +101,7 @@ namespace Uchu.World.Handlers.GameMessages
         [PacketHandler]
         public async Task PlayEmoteHandler(PlayEmoteMessage message, Player player)
         {
-            var animation = (await ClientCache.GetTableAsync<Emotes>()).FirstOrDefault(e => e.Id == message.EmoteId);
+            var animation = await ClientCache.FindAsync<Emotes>(message.EmoteId);
             
             player.Zone.BroadcastMessage(new PlayAnimationMessage
             {

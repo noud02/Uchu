@@ -34,8 +34,8 @@ namespace Uchu.World.Client
             Zones.Clear();
 
             Logger.Information("Parsing zone info...");
-            
-            var zone = (await ClientCache.GetTableAsync<ZoneTable>()).FirstOrDefault(zone => zone.ZoneID == seek);
+
+            var zone = await ClientCache.FindAsync<ZoneTable>(seek);
                 
             if (zone == default)
             {

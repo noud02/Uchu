@@ -135,15 +135,11 @@ namespace Uchu.World
 
         private async Task QueryLootMatrixAsync()
         {
-            var matrices = (await ClientCache.GetTableAsync<Core.Client.LootMatrix>()).Where(
-                m => m.LootMatrixIndex == LootIndex
-            ).ToArray();
+            var matrices = await ClientCache.FindAllAsync<Core.Client.LootMatrix>(LootIndex);
 
             foreach (var matrix in matrices)
             {
-                var tables = (await ClientCache.GetTableAsync<LootTable>()).Where(
-                    t => t.LootTableIndex == matrix.LootTableIndex
-                ).ToArray();
+                var tables = await ClientCache.FindAllAsync<LootTable>(matrix.LootTableIndex);
 
                 var items = tables.Select(t => new LootMatrixEntry
                 {
@@ -168,10 +164,7 @@ namespace Uchu.World
 
         private async Task QueryCurrencyMatrixAsync()
         {
-            var matrices = (await ClientCache.GetTableAsync<CurrencyTable>()).Where(
-                c => c.CurrencyIndex == CurrencyIndex
-            ).ToArray();
-
+            var matrices = await ClientCache.FindAllAsync<CurrencyTable>(CurrencyIndex);
             foreach (var matrix in matrices)
             {
                 var entry = new CurrencyMatrix
@@ -191,10 +184,7 @@ namespace Uchu.World
 
             if (destructible != default)
             {
-                var component = (await ClientCache.GetTableAsync<Core.Client.DestructibleComponent>()).FirstOrDefault(
-                    c => c.Id == destructible
-                );
-
+                var component = (await ClientCache.FindAsync<Core.Client.DestructibleComponent>(destructible));
                 LootIndex = component.LootMatrixIndex ?? 0;
 
                 CurrencyIndex = component.CurrencyIndex ?? 0;
@@ -208,14 +198,9 @@ namespace Uchu.World
 
             if (package != default)
             {
-                var component = (await ClientCache.GetTableAsync<PackageComponent>()).FirstOrDefault(
-                    c => c.Id == package
-                );
-
+                var component = await ClientCache.FindAsync<PackageComponent>(package);
                 LootIndex = component.LootMatrixIndex ?? 0;
-
                 CurrencyIndex = default;
-
                 return;
             }
 

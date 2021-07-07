@@ -106,10 +106,9 @@ namespace Uchu.World.Systems.Behaviors
             target ??= BranchContext.Target;
             
             var fx = type != default
-                ? (await ClientCache.GetTableAsync<BehaviorEffect>()).FirstOrDefault(e =>
-                    e.EffectType == type && e.EffectID == effectId)
-                : (await ClientCache.GetTableAsync<BehaviorEffect>()).FirstOrDefault(e =>
-                    e.EffectID == effectId);
+                ? (await ClientCache.FindAllAsync<BehaviorEffect>(effectId)).FirstOrDefault(e =>
+                    e.EffectType == type)
+                : await ClientCache.FindAsync<BehaviorEffect>(effectId);
             
             if (fx?.EffectName == null || fx.EffectType == null || target == null)
                 return;

@@ -771,7 +771,7 @@ namespace Uchu.World.Handlers.Commands
 
             if (!int.TryParse(arguments[0], out var id)) return "Invalid <zoneId>";
 
-            ZoneTable WorldTable = ClientCache.GetTable<ZoneTable>().FirstOrDefault(t => t.ZoneID == id);
+            var WorldTable = ClientCache.Find<ZoneTable>(id);
 
             if (WorldTable == default)
             {
@@ -913,11 +913,12 @@ namespace Uchu.World.Handlers.Commands
             
             if (int.TryParse(arguments[0], out var id))
             {
-                emote = (await ClientCache.GetTableAsync<Emotes>()).FirstOrDefault(c => c.Id == id);
+                emote = await ClientCache.FindAsync<Emotes>(id);
             }
             else
             {
-                emote = (await ClientCache.GetTableAsync<Emotes>()).FirstOrDefault(c => c.AnimationName == arguments[0].ToLower());
+                await using var cdClient = new CdClientContext();
+                emote = cdClient.EmotesTable.FirstOrDefault(c => c.AnimationName == arguments[0].ToLower());
             }
 
             if (emote?.Id == default)

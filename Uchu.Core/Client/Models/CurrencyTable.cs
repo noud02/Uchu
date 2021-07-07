@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Uchu.Core.Client.Attribute;
 
 namespace Uchu.Core.Client
 {
@@ -9,7 +10,7 @@ namespace Uchu.Core.Client
 		[Key] [Column("efId")]
 		public int EfId { get; set; }
 
-		[Column("currencyIndex")]
+		[CacheIndex] [Column("currencyIndex")]
 		public int? CurrencyIndex { get; set; }
 
 		[Column("npcminlevel")]

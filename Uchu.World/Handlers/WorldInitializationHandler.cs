@@ -427,9 +427,8 @@ namespace Uchu.World.Handlers
                     var progressNodes = new List<MissionProgressNode>
                         {new MissionProgressNode {Value = task.Values.Sum(v => v.Count)}};
 
-                    var cdTask = ClientCache.GetTable<MissionTasks>().First(t => t.Uid == task.TaskId);
-
                     // If the task type is collectible, also send all collectible ids
+                    var cdTask = ClientCache.Find<MissionTasks>(task.TaskId);
                     if (cdTask.TaskType != null && ((MissionTaskType) cdTask.TaskType) == MissionTaskType.Collect)
                     {
                         progressNodes.AddRange(task.ValueArray()

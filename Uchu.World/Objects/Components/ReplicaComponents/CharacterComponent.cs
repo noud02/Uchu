@@ -508,8 +508,7 @@ namespace Uchu.World
             level = level == 0 ? 1 : level;
 
             // Make sure the level exists
-            var levelLookup = (await ClientCache.GetTableAsync<LevelProgressionLookup>())
-                .FirstOrDefault(l => l.Id == level);
+            var levelLookup = await ClientCache.FindAsync<LevelProgressionLookup>(level);
             if (levelLookup == default)
                 return;
 

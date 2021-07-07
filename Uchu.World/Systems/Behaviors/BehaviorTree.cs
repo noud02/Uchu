@@ -136,17 +136,14 @@ namespace Uchu.World.Systems.Behaviors
         /// <returns>The behavior tree</returns>
         public static async Task<BehaviorTree> FromSkillSetAsync(int skillSetId)
         {
-            var skillSetSkills = (await ClientCache.GetTableAsync<ItemSetSkills>())
-                .Where(i => i.SkillSetID == skillSetId);
+            var skillSetSkills = await ClientCache.FindAllAsync<ItemSetSkills>(skillSetId);
 
             // Create the behavior tree from all the skills in the skill set
             var tree = new BehaviorTree
             {
                 BehaviorIds = await Task.WhenAll(skillSetSkills.Select(async skillSetSkill =>
                 {
-                    var behavior = (await ClientCache.GetTableAsync<SkillBehavior>())
-                        .FirstOrDefault(b => b.SkillID == skillSetSkill.SkillID);
-
+                    var behavior = await ClientCache.FindAsync<SkillBehavior>(skillSetSkill.SkillID);
                     return new BehaviorInfo
                     {
                         BaseBehavior = behavior?.BehaviorID ?? 0,
@@ -166,16 +163,13 @@ namespace Uchu.World.Systems.Behaviors
         {
             var tree = new BehaviorTree();
 
-            var objectSkills = (await ClientCache.GetTableAsync<ObjectSkills>()).Where(i =>
-                i.ObjectTemplate == lot
-            ).ToArray();
-
+            var objectSkills = await ClientCache.FindAllAsync<ObjectSkills>(lot);
             tree.BehaviorIds = new BehaviorInfo[objectSkills.Length];
 
             for (var index = 0; index < objectSkills.Length; index++)
             {
                 var objectSkill = objectSkills[index];
-                var behavior = (await ClientCache.GetTableAsync<SkillBehavior>()).FirstOrDefault(b => b.SkillID == objectSkill.SkillID);
+                var behavior = await ClientCache.FindAsync<SkillBehavior>(objectSkill.SkillID);
 
                 if (behavior == default)
                 {
@@ -235,8 +229,7 @@ namespace Uchu.World.Systems.Behaviors
         /// <returns>The skill behavior if it existed, <c>default</c> otherwise</returns>
         private static async Task<SkillBehavior> BaseBehaviorForSkill(int skillId)
         {
-            var skillBehavior = (await ClientCache.GetTableAsync<SkillBehavior>()).FirstOrDefault(b => b.SkillID == skillId);
-            
+            var skillBehavior = await ClientCache.FindAsync<SkillBehavior>(skillId);
             if (skillBehavior == default)
             {
                 Logger.Error($"Could not find behavior for skill: {skillId}.");
@@ -303,10 +296,7 @@ namespace Uchu.World.Systems.Behaviors
         /// <returns>The instantiated behavior base if succeeded, <c>null</c> otherwise</returns>
         private static async Task<BehaviorBase> BehaviorFromInfo(BehaviorInfo info)
         {
-            var behavior = (await ClientCache.GetTableAsync<BehaviorTemplate>()).FirstOrDefault(
-                t => t.BehaviorID == info.BaseBehavior
-            );
-
+            var behavior = (await ClientCache.FindAsync<BehaviorTemplate>(info.BaseBehavior));
             if (behavior?.TemplateID == null)
                 return null;
             

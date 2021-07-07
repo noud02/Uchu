@@ -298,14 +298,12 @@ namespace Uchu.World
         /// <returns>The item component for the lot, if available</returns>
         private static async Task<ItemComponent> GetItemComponentForLotAysnc(Lot lot)
         {
-            var itemRegistryEntry = (await ClientCache.GetTableAsync<ComponentsRegistry>()).FirstOrDefault(
-                r => r.Id == lot && r.Componenttype == (int)ComponentId.ItemComponent);
+            var itemRegistryEntry = (await ClientCache.FindAllAsync<ComponentsRegistry>(lot)).FirstOrDefault(
+                r => r.Componenttype == (int) ComponentId.ItemComponent);
             if (itemRegistryEntry == default)
                 return default;
 
-            var itemComponent = (await ClientCache.GetTableAsync<ItemComponent>()).FirstOrDefault(
-                i => i.Id == itemRegistryEntry.Componentid);
-
+            var itemComponent = (await ClientCache.FindAsync<ItemComponent>(itemRegistryEntry.Componentid));
             return itemComponent;
         }
 

@@ -52,8 +52,7 @@ namespace Uchu.World
         {
             get
             {
-                var id = Id;
-                return ClientCache.GetTable<Core.Client.Objects>().FirstOrDefault(o => o.Id == id);
+                return ClientCache.Find<Core.Client.Objects>(Id);
             }
         }
 
@@ -64,9 +63,8 @@ namespace Uchu.World
 
         public int GetComponentId(int componentType)
         {
-            var id = Id;
-            var itemRegistryEntry = ClientCache.GetTable<ComponentsRegistry>().FirstOrDefault(
-                r => r.Id == id && r.Componenttype == componentType
+            var itemRegistryEntry = ClientCache.FindAll<ComponentsRegistry>(Id).FirstOrDefault(
+                r => r.Componenttype == componentType
             );
 
             return itemRegistryEntry?.Componentid ?? 0;
@@ -80,8 +78,8 @@ namespace Uchu.World
         public int[] GetComponentIds(int componentType)
         {
             var id = Id;
-            var itemRegistryEntry = ClientCache.GetTable<ComponentsRegistry>().Where(
-                r => r.Id == id && r.Componenttype == componentType
+            var itemRegistryEntry = ClientCache.FindAll<ComponentsRegistry>(Id).Where(
+                r => r.Componenttype == componentType
             );
 
             return itemRegistryEntry.Select(r => r.Componentid.Value).ToArray();

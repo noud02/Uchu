@@ -79,8 +79,7 @@ namespace Uchu.World
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(Path.Combine(UchuServer.Config.ResourcesConfiguration.GameResourceFolder,
-                    ClientCache.GetTable<TamingBuildPuzzles>().FirstOrDefault(i => i.NPCLot == GameObject.Lot)
-                    .ValidPiecesLXF));
+                    ClientCache.Find<TamingBuildPuzzles>(GameObject.Lot).ValidPiecesLXF));
 
                 foreach (XmlNode node in doc.DocumentElement.ChildNodes)
                 {

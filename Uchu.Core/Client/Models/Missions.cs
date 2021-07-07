@@ -1,15 +1,17 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Uchu.Core.Client.Attribute;
 
 namespace Uchu.Core.Client
 {
 	[Table("Missions")]
+	[CacheMethod(CacheMethod.Burst)]
 	public class Missions
 	{
 		[Key] [Column("efId")]
 		public int EfId { get; set; }
 
-		[Column("id")]
+		[CacheIndex] [Column("id")]
 		public int? Id { get; set; }
 
 		[Column("defined_type")]

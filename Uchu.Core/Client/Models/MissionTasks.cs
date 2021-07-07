@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Uchu.Core.Client.Attribute;
 
 namespace Uchu.Core.Client
 {
 	[Table("MissionTasks")]
+	[CacheMethod(CacheMethod.Burst)]
 	public class MissionTasks
 	{
 		[Key] [Column("efId")]
@@ -36,7 +38,7 @@ namespace Uchu.Core.Client
 		[Column("IconID")]
 		public int? IconID { get; set; }
 
-		[Column("uid")]
+		[CacheIndex] [Column("uid")]
 		public int? Uid { get; set; }
 
 		[Column("largeTaskIconID")]

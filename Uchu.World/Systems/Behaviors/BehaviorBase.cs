@@ -237,10 +237,7 @@ namespace Uchu.World.Systems.Behaviors
             var cachedBehavior = Cache.ToArray().FirstOrDefault(c => c.BehaviorId == behaviorId);
             if (cachedBehavior != default) return cachedBehavior;
 
-            var behavior = (await ClientCache.GetTableAsync<BehaviorTemplate>()).FirstOrDefault(
-                t => t.BehaviorID == behaviorId
-            );
-            
+            var behavior = ClientCache.Find<BehaviorTemplate>(behaviorId);
             if (behavior?.TemplateID == null)
                 return new EmptyBehavior();
             
@@ -272,8 +269,8 @@ namespace Uchu.World.Systems.Behaviors
         /// <returns>The behavior parameter from the database</returns>
         protected async Task<BehaviorParameter> GetParameter(string name)
         {
-            return (await ClientCache.GetTableAsync<BehaviorParameter>()).FirstOrDefault(p =>
-                p.BehaviorID == BehaviorId && p.ParameterID == name
+            return ClientCache.FindAll<BehaviorParameter>(BehaviorId).FirstOrDefault(p =>
+                p.ParameterID == name
             );
         }
 
@@ -299,20 +296,16 @@ namespace Uchu.World.Systems.Behaviors
         /// </summary>
         protected BehaviorParameter[] GetParameters()
         {
-            return ClientCache.GetTable<BehaviorParameter>().Where(p =>
-                p.BehaviorID == BehaviorId
-            ).ToArray();
+            return ClientCache.FindAll<BehaviorParameter>(BehaviorId);
         }
 
         /// <summary>
         /// Returns the behavior template associated with this behavior from the database
         /// </summary>
         /// <returns>The behavior template associated with this behavior</returns>
-        public async Task<BehaviorTemplate> GetTemplate()
+        public BehaviorTemplate GetTemplate()
         {
-            return (await ClientCache.GetTableAsync<BehaviorTemplate>()).FirstOrDefault(p =>
-                p.BehaviorID == BehaviorId
-            );
+            return ClientCache.Find<BehaviorTemplate>(BehaviorId);
         }
         
         /// <summary>

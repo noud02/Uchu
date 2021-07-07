@@ -41,10 +41,7 @@ namespace Uchu.World
             
             Listen(OnStart, async () =>
             {
-                var skills = (await ClientCache.GetTableAsync<ObjectSkills>()).Where(
-                    s => s.ObjectTemplate == GameObject.Lot
-                ).ToArray();
-
+                var skills = await ClientCache.FindAllAsync<ObjectSkills>(GameObject.Lot);
                 DefaultSkillSet = skills
                     .Where(s => s.SkillID != default)
                     .Select(s => new SkillEntry

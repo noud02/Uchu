@@ -71,13 +71,10 @@ namespace Uchu.World
                     return null;
                 }
             }
-            
-            var itemTemplate = (await ClientCache.GetTableAsync<Core.Client.Objects>()).FirstOrDefault(
-                o => o.Id == lot
-            );
 
-            var itemRegistryEntry = (await ClientCache.GetTableAsync<ComponentsRegistry>()).FirstOrDefault(
-                r => r.Id == lot && r.Componenttype == (int)ComponentId.ItemComponent
+            var itemTemplate = (await ClientCache.FindAsync<Core.Client.Objects>(lot));
+            var itemRegistryEntry = (await ClientCache.FindAllAsync<ComponentsRegistry>(lot)).FirstOrDefault(
+                r => r.Componenttype == (int) ComponentId.ItemComponent
             );
 
             if (itemTemplate == default || itemRegistryEntry == default)
@@ -89,8 +86,7 @@ namespace Uchu.World
 
             // Set all the standard values
             instance.Settings = extraInfo ?? new LegoDataDictionary();
-            instance.ItemComponent = (await ClientCache.GetTableAsync<ItemComponent>()).First(
-                i => i.Id == itemRegistryEntry.Componentid);
+            instance.ItemComponent = await ClientCache.FindAsync<ItemComponent>(itemRegistryEntry.Componentid);
             instance.Owner = owner;
             instance.Count = count;
             instance.Slot = slot;
@@ -101,11 +97,8 @@ namespace Uchu.World
             instance.IsPackage = instance.Lot.GetComponentId(ComponentId.PackageComponent) != default;
             instance.Inventory = inventory;
             instance.LootType = lootType;
-            
-            var skills = (await ClientCache.GetTableAsync<ObjectSkills>()).Where(
-                s => s.ObjectTemplate == instance.Lot
-            ).ToArray();
 
+            var skills = (await ClientCache.FindAllAsync<ObjectSkills>(instance.Lot));
             instance.IsConsumable = skills.Any(
                 s => s.CastOnType == (int) SkillCastType.OnConsumed
             );

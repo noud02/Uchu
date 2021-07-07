@@ -301,8 +301,7 @@ namespace Uchu.World
         /// <param name="celebrationId">The Id of the celebration to trigger</param>
         public async Task TriggerCelebration(CelebrationId celebrationId)
         {
-            var celebrations = await ClientCache.GetTableAsync<CelebrationParameters>();
-            var celebration = (celebrations.Where(t => t.Id == (int)celebrationId).ToArray())[0];
+            var celebration = (await ClientCache.FindAsync<CelebrationParameters>((int) celebrationId));
 
             this.Message(new StartCelebrationEffectMessage
             {

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Uchu.Core.Client.Attribute;
 
 namespace Uchu.Core.Client
 {
@@ -15,7 +16,7 @@ namespace Uchu.Core.Client
 		[Column("PuzzleModelLot")]
 		public int? PuzzleModelLot { get; set; }
 
-		[Column("NPCLot")]
+		[CacheIndex] [Column("NPCLot")]
 		public int? NPCLot { get; set; }
 
 		[Column("ValidPiecesLXF")]

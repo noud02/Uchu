@@ -1,15 +1,17 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Uchu.Core.Client.Attribute;
 
 namespace Uchu.Core.Client
 {
 	[Table("ObjectSkills")]
+	[CacheMethod(CacheMethod.Burst)]
 	public class ObjectSkills
 	{
 		[Key] [Column("efId")]
 		public int EfId { get; set; }
 
-		[Column("objectTemplate")]
+		[CacheIndex] [Column("objectTemplate")]
 		public int? ObjectTemplate { get; set; }
 
 		[Column("skillID")]

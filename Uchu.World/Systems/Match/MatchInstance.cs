@@ -75,7 +75,7 @@ namespace Uchu.World.Systems.Match
         public MatchInstance(int type, Zone zone)
         {
             // Load the match data.
-            var matchData = ClientCache.GetTable<Activities>().First(activity => activity.ActivityID == type);
+            var matchData = ClientCache.Find<Activities>(type);
             var matchZoneId =  matchData.InstanceMapID ?? 0;
             var matchCurrencyLot = matchData.OptionalCostLOT;
             var matchCurrencyCount = matchData.OptionalCostCount;

@@ -1,15 +1,17 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Uchu.Core.Client.Attribute;
 
 namespace Uchu.Core.Client
 {
 	[Table("PhysicsComponent")]
+	[CacheMethod(CacheMethod.Burst)]
 	public class PhysicsComponent
 	{
 		[Key] [Column("efId")]
 		public int EfId { get; set; }
 
-		[Column("id")]
+		[CacheIndex] [Column("id")]
 		public int? Id { get; set; }
 
 		[Column("static")]

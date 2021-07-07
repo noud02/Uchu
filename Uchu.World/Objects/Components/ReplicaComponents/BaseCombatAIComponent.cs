@@ -59,9 +59,7 @@ namespace Uchu.World
 
                     foreach (var skillEntry in SkillComponent.DefaultSkillSet)
                     {
-                        var skillInfo = (await ClientCache.GetTableAsync<SkillBehavior>()).First(
-                            s => s.SkillID == skillEntry.SkillId
-                        );
+                        var skillInfo = await ClientCache.FindAsync<SkillBehavior>(skillEntry.SkillId);
                         
                         SkillEntries.Add(new NpcSkillEntry
                         {

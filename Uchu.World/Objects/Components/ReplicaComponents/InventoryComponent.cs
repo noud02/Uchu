@@ -78,10 +78,10 @@ namespace Uchu.World
         {
             if (!(GameObject is Player))
             {
-                var component = ClientCache.GetTable<ComponentsRegistry>().FirstOrDefault(c =>
-                    c.Id == GameObject.Lot && c.Componenttype == (int) ComponentId.InventoryComponent);
-                var itemTemplates = ClientCache.GetTable<Core.Client.InventoryComponent>()
-                    .Where(i => i.Id == component.Componentid && i.Itemid != default).ToArray();
+                var component = ClientCache.FindAll<ComponentsRegistry>(GameObject.Lot).FirstOrDefault(c =>
+                    c.Componenttype == (int) ComponentId.InventoryComponent);
+                var itemTemplates = ClientCache.FindAll<Core.Client.InventoryComponent>(component.Componentid)
+                    .Where(i => i.Itemid != default).ToArray();
 
                 foreach (var itemTemplate in itemTemplates)
                 {
@@ -90,8 +90,7 @@ namespace Uchu.World
                     
                     var lot = (Lot) itemTemplate.Itemid;
                     var componentId = lot.GetComponentId(ComponentId.ItemComponent);
-                    var itemComponent = (await ClientCache.GetTableAsync<ItemComponent>()).First(
-                        i => i.Id == componentId);
+                    var itemComponent = await ClientCache.FindAsync<ItemComponent>(componentId);
 
                     if (itemComponent.ItemType == default)
                         continue;

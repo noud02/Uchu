@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Uchu.Core.Client.Attribute;
 
 namespace Uchu.Core.Client
 {
@@ -12,7 +13,7 @@ namespace Uchu.Core.Client
 		[Column("itemid")]
 		public int? Itemid { get; set; }
 
-		[Column("LootTableIndex")]
+		[CacheIndex] [Column("LootTableIndex")]
 		public int? LootTableIndex { get; set; }
 
 		[Column("id")]
