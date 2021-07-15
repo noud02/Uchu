@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using InfectedRose.Core;
 using RakDotNet.IO;
 
 namespace Uchu.World
@@ -52,7 +53,7 @@ namespace Uchu.World
 
             var hasRotation = OriginatorRotation != Quaternion.Identity;
             writer.WriteBit(hasRotation);
-            if (hasRotation) writer.Write(OriginatorRotation);
+            if (hasRotation) writer.WriteNiQuaternion(OriginatorRotation);
 
             writer.Write((uint) Content.Length);
             foreach (var b in Content) writer.Write(b);

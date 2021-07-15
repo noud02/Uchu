@@ -34,7 +34,10 @@ namespace Uchu.World
                 // This is for POIs with a POI key in the settings, used for example everywhere in AG except for
                 // Monument Orange Path (AG_Mon_3).
                 // Not all POIs are handled this way, for example those in GF are done using triggers.
-                if (GameObject.Settings.ContainsKey("POI"))
+                // Also handles respawn volumes (when the player reaches these, it'll be their new respawn location)
+                if (GameObject.Settings.ContainsKey("POI")
+                    || (GameObject.Settings.TryGetValue("respawnVol", out var isRespawnVolume)
+                    && (bool) isRespawnVolume))
                 {
                     // Find physics asset path from cdclient
                     var phantomPhysicsComponentId = GameObject.Lot.GetComponentId(ComponentId.PhantomPhysicsComponent);

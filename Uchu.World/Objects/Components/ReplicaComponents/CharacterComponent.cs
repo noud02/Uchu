@@ -309,7 +309,14 @@ namespace Uchu.World
         /// <param name="flagId">The flag to find for the player</param>
         /// <returns><c>true</c> or <c>false</c> based on whether the player has the flag or not</returns>
         public bool GetFlag(int flagId) => Flags.Contains(flagId);
-        
+
+        /// <summary>
+        /// Returns the flag value for a flag id
+        /// </summary>
+        /// <param name="flagId">The flag to find for the player</param>
+        /// <returns><c>true</c> or <c>false</c> based on whether the player has the flag or not</returns>
+        public bool GetFlag(Flag flagId) => Flags.Contains((int) flagId);
+
         /// <summary>
         /// Adds or removes a flag from the player based on the <c>state</c>
         /// </summary>
@@ -343,31 +350,34 @@ namespace Uchu.World
         }
 
         /// <summary>
-        /// Whether a player has a certain faction or not
+        /// Adds or removes a flag from the player based on the <c>state</c>
         /// </summary>
-        /// <param name="factionFlagId">The flag Id to look up for the player</param>
-        /// <returns>True if the player has a certain faction</returns>
-        public bool HasFaction(FactionFlag factionFlagId) => GetFlag((int) factionFlagId);
+        /// <param name="flagId">The id of the flag to change</param>
+        /// <param name="state"><c>true</c> if the flag should be added, <c>false</c> if the flag should be removed</param>
+        /// <param name="silent">Whether mission progress and user flag updates are sent</param>
+        public async Task SetFlagAsync(Flag flagId, bool state, bool silent = false)
+            => await SetFlagAsync((int) flagId, state, silent);
+
 
         /// <summary>
         /// Whether this character belongs to the sentinel faction
         /// </summary>
-        public bool IsSentinel => HasFaction(FactionFlag.Sentinel);
+        public bool IsSentinel => GetFlag(Flag.Sentinel);
         
         /// <summary>
         /// Whether this character belongs to the assembly faction
         /// </summary>
-        public bool IsAssembly => HasFaction(FactionFlag.Assembly);
+        public bool IsAssembly => GetFlag(Flag.Assembly);
         
         /// <summary>
         /// Whether this player belongs to the paradox faction
         /// </summary>
-        public bool IsParadox => HasFaction(FactionFlag.Paradox);
+        public bool IsParadox => GetFlag(Flag.Paradox);
         
         /// <summary>
         /// Whether this player belongs to the paradox faction
         /// </summary>
-        public bool IsVentureLeague => HasFaction(FactionFlag.Venture);
+        public bool IsVentureLeague => GetFlag(Flag.Venture);
 
         /// <summary>
         /// Returns the lot of a valid faction token for this character, if this character has multiple factions it will

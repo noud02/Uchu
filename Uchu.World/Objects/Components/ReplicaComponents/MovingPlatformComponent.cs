@@ -80,7 +80,7 @@ namespace Uchu.World
             {
                 PathName = GameObject.Settings.TryGetValue("attached_path", out var name) ? (string) name : "";
                 PathStart = GameObject.Settings.TryGetValue("attached_path_start", out var start)
-                    ? (uint) start
+                    ? Convert.ToUInt32(start)
                     : 0;
 
                 Path = Zone.ZoneInfo.LuzFile.PathData.FirstOrDefault(p =>

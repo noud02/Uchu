@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Timers;
 using InfectedRose.Lvl;
+using InfectedRose.Core;
 using Microsoft.EntityFrameworkCore;
 using RakDotNet.IO;
 using Uchu.Core;
@@ -136,15 +137,15 @@ namespace Uchu.World
                     var spawnerName = (string) possibleSpawnerName;
                     if (spawnerName != "")
                     {
-                        foreach (var otherGameObject in Zone.GameObjects)
+                        foreach (var otherGameObject in Zone.Objects.Where(o => o is SpawnerNetwork))
                         {
-                            TryConnectSpawner(otherGameObject, spawnerName);
+                            TryConnectSpawner(otherGameObject as SpawnerNetwork, spawnerName);
                         }
                         
                         // Sometimes the spawners are constructed after this quick build game object
                         Listen(Zone.OnObject, @object =>
                         {
-                            if (!(@object is GameObject gameObject))
+                            if (!(@object is SpawnerNetwork gameObject))
                                 return;
                             TryConnectSpawner(gameObject, spawnerName);
                         });
@@ -200,15 +201,14 @@ namespace Uchu.World
         }
 
         /// <summary>
-        /// Tries to link this quick build to a spawner game object, making the quick build appear right
-        /// after the linked game object was smashed
+        /// Tries to link this quick build to a spawner network object, making the quick build appear right
+        /// after the spawner network has a spawned object smashed
         /// </summary>
-        /// <param name="gameObject">The spawner to try to link to</param>
-        /// <param name="spawnerName">The required name of the spawner to make it linkable</param>
-        private void TryConnectSpawner(GameObject gameObject, string spawnerName)
+        /// <param name="spawner">The spawner to try to link to</param>
+        /// <param name="spawnerName">The required name of the spawner network to make it linkable</param>
+        private void TryConnectSpawner(SpawnerNetwork spawner, string spawnerName)
         {
-            if (gameObject.Name != spawnerName 
-                || !gameObject.TryGetComponent<SpawnerComponent>(out var spawner))
+            if (spawner.Name != spawnerName)
                 return;
 
             ConnectedToSpawner = true;
@@ -218,13 +218,12 @@ namespace Uchu.World
             Activator.Layer = StandardLayer.Hidden;
             
             // Sync the respawn time and the reset time between the two components
-            spawner.RespawnTime = (int)(_resetTime + _timeToSmash) * 1000;
+            spawner.RespawnTime = (uint) (_resetTime + _timeToSmash) * 1000;
             
             Listen(spawner.OnRespawnInitiated, Show);
             Listen(spawner.OnRespawnTimeCompleted, Hide);
         }
-        
-        
+
         /// <summary>
         /// Hides the quick build
         /// </summary>

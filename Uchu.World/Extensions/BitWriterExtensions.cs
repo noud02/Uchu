@@ -1,5 +1,5 @@
 using System.IO;
-using InfectedRose.Lvl;
+using InfectedRose.Core;
 using RakDotNet.IO;
 using Uchu.Core;
 using Uchu.World.Compression;

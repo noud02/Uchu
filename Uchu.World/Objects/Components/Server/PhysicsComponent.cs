@@ -75,6 +75,23 @@ namespace Uchu.World
                     await inventory.DiscoverAsync((string) poiGroup);
                 });
             }
+
+            if (GameObject.Settings.TryGetValue("respawnVol", out var isRespawnVolume) && (bool) isRespawnVolume)
+            {
+                Listen(GameObject.GetComponent<PhysicsComponent>().OnEnter, async component =>
+                {
+                    if (!(component.GameObject is Player player)) return;
+
+                    var rotation = (Vector4) GameObject.Settings["rspRot"];
+
+                    player.Message(new PlayerReachedRespawnCheckpointMessage
+                    {
+                        Associate = player,
+                        Position = (Vector3) GameObject.Settings["rspPos"],
+                        Rotation = new Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W),
+                    });
+                });
+            }
         }
 
         public void SetPhysicsByPath(string path) // We can't read HKX so this is basically just a bodge

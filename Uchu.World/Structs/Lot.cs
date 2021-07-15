@@ -128,6 +128,18 @@ namespace Uchu.World
         public const int AssemblyFactionVendorProxy = 7096;
         public const int VentureFactionVendorProxy = 7095;
 
+        public const int SenseiWuNpc = 13789;
+        public const int ColeNpc = 13790;
+        public const int JayNpc = 13792;
+        public const int AssemblyPetConsole = 13879;
+        public const int HariHowzenNpc = 13798;
+
+        public const int Chopov = 16047;
+        public const int Frakjaw = 16049;
+        public const int Krazi = 16049;
+        public const int Bonezai = 16050;
+
+
         #endregion
     }
 }

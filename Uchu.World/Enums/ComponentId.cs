@@ -101,9 +101,10 @@ namespace Uchu.World
         IgnoreListComponent = 96,
         LUPLaunchpadComponent = 97,
         BuffComponent = 98,
-        InteractionManagerComponent = 98,
+        InteractionManagerComponent = 99,
         DonationVendorComponent = 100,
         CombatMediatorComponent = 101,
+        RailActivator = 104,
         Component107 = 107,
         Possesable = 108
     }

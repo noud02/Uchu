@@ -7,23 +7,170 @@ using Uchu.Core;
 
 namespace Uchu.World
 {
+    public class SpawnerNetwork : GameObject
+    {
+        private readonly Random _random;
+
+        private List<SpawnerComponent> SpawnerNodes { get; set; }
+
+        /// <summary>
+        /// Minimum number of entities to have spawned at a time.
+        /// </summary>
+        public uint SpawnsToMaintain { get; set; } = 1;
+
+        /// <summary>
+        /// Time to wait before spawning a new entity when one is destroyed, in milliseconds.
+        /// </summary>
+        public uint RespawnTime { get; set; } = 10000;
+
+        /// <summary>
+        /// Maximum number of entities to have spawned at a time.
+        /// </summary>
+        public int MaxToSpawn { get; set; }
+
+        /// <summary>
+        /// Whether this spawner network should start spawning as soon as it's loaded
+        /// </summary>
+        public bool ActivateOnLoad { get; set; }
+
+        /// <summary>
+        /// Event that's called after a game object is smashed and the spawner is waiting to respawn the game object
+        /// </summary>
+        public Event<Player> OnRespawnInitiated { get; }
+
+        /// <summary>
+        /// Event that's fired after a game object is smashed and the respawn time has passed
+        /// </summary>
+        public Event<Player> OnRespawnTimeCompleted { get; }
+
+        public SpawnerNetwork()
+        {
+            _random = new Random();
+            SpawnerNodes = new List<SpawnerComponent>();
+            OnRespawnInitiated = new Event<Player>();
+            OnRespawnTimeCompleted = new Event<Player>();
+
+            Listen(OnRespawnInitiated, (lootOwner) =>
+            {
+                Zone.Schedule(() =>
+                {
+                    OnRespawnTimeCompleted.Invoke(lootOwner);
+                    TrySpawn();
+                }, RespawnTime);
+            });
+
+            Listen(OnDestroyed, () =>
+            {
+                foreach (var node in SpawnerNodes.ToArray())
+                {
+                    Destroy(node);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Number of currently existing spawned entities across all spawner nodes.
+        /// </summary>
+        public int ActiveCount => SpawnerNodes.Count(node => node.HasActiveSpawn);
+
+        /// <summary>
+        /// Add a new spawner node to this network.
+        /// </summary>
+        /// <param name="component">Spawner component to add.</param>
+        public void AddSpawnerNode(SpawnerComponent component)
+        {
+            SpawnerNodes.Add(component);
+        }
+
+        /// <summary>
+        /// Find a random spawner node in this network which doesn't have a spawned entity alive.
+        /// </summary>
+        /// <returns>A SpawnerComponent without a spawn if available, otherwise null.</returns>
+        public SpawnerComponent FindInactiveNode()
+        {
+            var availableNodes = SpawnerNodes.Where(node =>
+                node.HasActiveSpawn == false).ToArray();
+
+            // All spawner nodes are in use
+            if (availableNodes.Length == 0)
+                return default;
+
+            // Return random inactive node
+            return availableNodes[_random.Next(availableNodes.Length)];
+        }
+
+        /// <summary>
+        /// Spawn a new entity if min/max conditions are met and an empty spawner node is available.
+        /// </summary>
+        public void TrySpawn()
+        {
+            if (MaxToSpawn != -1 && ActiveCount >= MaxToSpawn)
+                return;
+
+            var node = FindInactiveNode();
+            node?.Spawn();
+        }
+
+        /// <summary>
+        /// Spawn entities until minimum number of entities is reached.
+        /// </summary>
+        public void SpawnAll()
+        {
+            for (var i = 0; i < SpawnsToMaintain; i++)
+            {
+                TrySpawn();
+            }
+        }
+    }
+    /// <summary>
+    /// Component responsible for spawning objects. Can be part of a spawner network.
+    /// <seealso cref="SpawnerNetwork"/>
+    /// </summary>
     [ServerComponent(Id = ComponentId.SpawnerComponent)]
     public class SpawnerComponent : Component
     {
-        private readonly Random _random;
-        public List<GameObject> ActiveSpawns { get; }
+        /// <summary>
+        /// Currently alive spawned entity, if it exists.
+        /// </summary>
+        public GameObject ActiveSpawn { get; private set; }
 
-        public LevelObjectTemplate LevelObject { get; set; }
-        
-        public List<SpawnLocation> SpawnLocations { get; set; }
+        /// <summary>
+        /// Whether or not this spawner currently has a spawned object that's still alive.
+        /// </summary>
+        public bool HasActiveSpawn => ActiveSpawn != null;
 
-        public int SpawnsToMaintain { get; set; } = 1;
-
+        /// <summary>
+        /// Time to wait before spawning a new entity when one is destroyed, in milliseconds.
+        /// </summary>
+        /// <remarks>
+        /// Only used for standalone spawners; spawner networks use the respawn time defined in the network.
+        /// </remarks>
         public int RespawnTime { get; set; } = 10000;
 
+        /// <summary>
+        /// The LOT of the object this spawner spawns.
+        /// </summary>
         public Lot SpawnTemplate { get; set; }
 
-        public uint SpawnNodeId { get; set; }
+        /// <summary>
+        /// Scale for the objects that are spawned.
+        /// </summary>
+        public float SpawnScale { get; set; } = 1;
+
+        /// <summary>
+        /// Spawner node ID in the network it's in (sequential integers starting from 0).
+        /// </summary>
+        public uint SpawnerNodeId { get; set; }
+
+        /// <summary>
+        /// Network this spawner is in, if applicable.
+        /// </summary>
+        public SpawnerNetwork Network { get; set; }
+
+        /// <summary>
+        /// Whether or not this spawner is part of a spawner network.
+        /// </summary>
+        public bool IsNetworkSpawner { get; set; }
         
         /// <summary>
         /// Event that's called after a game object is smashed and the spawner is waiting to respawn the game object
@@ -35,40 +182,39 @@ namespace Uchu.World
         /// </summary>
         public Event<Player> OnRespawnTimeCompleted { get; }
 
-        public LegoDataDictionary Settings { get; set; }
-
         protected SpawnerComponent()
         {
-            _random = new Random();
-            SpawnLocations = new List<SpawnLocation>();
-            ActiveSpawns = new List<GameObject>();
             OnRespawnInitiated = new Event<Player>();
             OnRespawnTimeCompleted = new Event<Player>();
-            
+
             Listen(OnStart, () =>
             {
-                if (Settings != default)
+                if (GameObject.Settings != default)
                 {
-                    if (Settings.TryGetValue("number_to_maintain", out var value))
+                    if (GameObject.Settings.TryGetValue("is_network_spawner", out var isNetworkSpawner))
                     {
-                        SpawnsToMaintain = (int) value;
+                        IsNetworkSpawner = (bool) isNetworkSpawner;
                     }
                 }
 
-                if (SpawnLocations.Count == 0)
-                {
-                    SpawnLocations.Add(new SpawnLocation
+                // Standalone spawner. Manages its own respawning.
+                if (!IsNetworkSpawner)
+                    Listen(OnRespawnTimeCompleted, player =>
                     {
-                        Position = Transform.Position,
-                        Rotation = Transform.Rotation
+                        Spawn();
                     });
-                }
 
                 GameObject.Layer = StandardLayer.Spawner;
             });
 
             Listen(OnDestroyed, () =>
             {
+                if (HasActiveSpawn)
+                {
+                    Destroy(ActiveSpawn);
+                    ActiveSpawn = null;
+                }
+
                 OnRespawnInitiated.Clear();
                 OnRespawnTimeCompleted.Clear();
             });
@@ -76,49 +222,19 @@ namespace Uchu.World
 
         private GameObject GenerateSpawnObject()
         {
-            var location = FindLocation();
-
-            location.InUse = true;
-
             var o = new LevelObjectTemplate
             {
                 Lot = SpawnTemplate,
-                Position = location.Position,
-                Rotation = location.Rotation,
-                Scale = LevelObject.Scale,
-                LegoInfo = Settings,
+                Position = Transform.Position,
+                Rotation = Transform.Rotation,
+                Scale = SpawnScale,
+                LegoInfo = GameObject.Settings,
                 ObjectId = ObjectId.FromFlags(ObjectIdFlags.Spawned | ObjectIdFlags.Client)
             };
-            
+
             var obj = GameObject.Instantiate(o, Zone, this);
 
-            if (obj.TryGetComponent<DestructibleComponent>(out var destructibleComponent))
-            {
-                Listen(destructibleComponent.OnSmashed, (smasher, lootOwner) =>
-                {
-                    location.InUse = false;
-                });
-            }
-
             return obj;
-        }
-
-        private SpawnLocation FindLocation()
-        {
-            var locations = SpawnLocations.Where(s => !s.InUse).ToArray();
-
-            if (locations.Length == 0)
-            {
-                return new SpawnLocation
-                {
-                    Position = Transform.Position,
-                    Rotation = Transform.Rotation
-                };
-            }
-            
-            var location = locations[_random.Next(locations.Length)];
-
-            return location;
         }
 
         public GameObject Spawn()
@@ -126,11 +242,11 @@ namespace Uchu.World
             var obj = GenerateSpawnObject();
             Start(obj);
             GameObject.Construct(obj);
-            ActiveSpawns.Add(obj);
+            ActiveSpawn = obj;
 
             Listen(obj.OnDestroyed, () =>
             {
-                ActiveSpawns.Remove(obj);
+                ActiveSpawn = null;
             });
 
             if (obj.TryGetComponent<DestructibleComponent>(out var destructibleComponent))
@@ -139,23 +255,22 @@ namespace Uchu.World
                 {
                     Destroy(obj);
 
-                    await OnRespawnInitiated.InvokeAsync(lootOwner);
-                    await Task.Delay(RespawnTime);
-                    await OnRespawnTimeCompleted.InvokeAsync(lootOwner);
-                    
-                    Spawn();
+                    if (IsNetworkSpawner)
+                    {
+                        // Part of a network which handles respawning
+                        await Network.OnRespawnInitiated.InvokeAsync(lootOwner);
+                    }
+                    else
+                    {
+                        // Standalone spawner
+                        await OnRespawnInitiated.InvokeAsync(lootOwner);
+                        await Task.Delay(RespawnTime);
+                        await OnRespawnTimeCompleted.InvokeAsync(lootOwner);
+                    }
                 });
             }
 
             return obj;
-        }
-
-        public void SpawnCluster()
-        {
-            for (var i = 0; i < SpawnsToMaintain; i++)
-            {
-                Spawn();
-            }
         }
     }
 }

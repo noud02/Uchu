@@ -549,9 +549,9 @@ namespace Uchu.Core
                 .ToList();
 
             // If the command can't be found, display help message
-            if (!group.TryGetValue(arguments[0].ToLower(CultureInfo.CurrentCulture), out var handler))
+            if (arguments.Count == 0 || !group.TryGetValue(arguments[0].ToLower(CultureInfo.CurrentCulture), out var handler))
             {
-                if (arguments[0].ToLower(CultureInfo.CurrentCulture) == "help")
+                if (arguments.Count == 0 || arguments[0].ToLower(CultureInfo.CurrentCulture) == "help")
                     return GenerateCommandHelpMessage(prefix, group, gameMasterLevel);
 
                 return "Unknown command. Type /help for a list of commands.";

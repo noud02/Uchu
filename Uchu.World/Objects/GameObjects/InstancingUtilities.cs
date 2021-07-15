@@ -9,12 +9,12 @@ namespace Uchu.World
     public static class InstancingUtilities
     {
         private static readonly Random Random = new Random();
-        
+
         public static GameObject Spawner(LevelObjectTemplate levelObject, Object parent)
         {
             if (!levelObject.LegoInfo.TryGetValue("spawntemplate", out var spawnTemplate))
             {
-                Logger.Error("Instantiating a spawner without a \"spawntemplete\" is now allowed.");
+                Logger.Error("Instantiating a spawner without a \"spawntemplate\" is not allowed.");
                 return null;
             }
 
@@ -32,6 +32,8 @@ namespace Uchu.World
                 lot: levelObject.Lot
             );
 
+            instance.Settings = levelObject.LegoInfo;
+
             if (levelObject.LegoInfo.TryGetValue("trigger_id", out var trigger))
             {
                 Logger.Debug($"SPAWN TRIGGER: {trigger}");
@@ -39,45 +41,49 @@ namespace Uchu.World
 
             var spawnerComponent = instance.AddComponent<SpawnerComponent>();
 
-            spawnerComponent.Settings = levelObject.LegoInfo;
             spawnerComponent.SpawnTemplate = new Lot((int) spawnTemplate);
-            spawnerComponent.LevelObject = levelObject;
+            spawnerComponent.SpawnScale = levelObject.Scale;
 
-            levelObject.LegoInfo.Remove("spawntemplate");
+            if (levelObject.LegoInfo.TryGetValue("respawn", out var respawnTime))
+                spawnerComponent.RespawnTime = Convert.ToInt32(Convert.ToSingle(respawnTime) * 1000);
 
             return instance;
         }
 
-        public static GameObject Spawner(LuzSpawnerPath spawnerPath, Object parent)
+        public static SpawnerNetwork SpawnerNetwork(LuzSpawnerPath spawnerPath, Zone zone)
         {
-            if (spawnerPath.Waypoints.Length == default) return default;
+            var network = Object.Instantiate<SpawnerNetwork>(zone);
 
-            var wayPoint = (LuzSpawnerWaypoint) spawnerPath.Waypoints[default];
+            network.ActivateOnLoad = spawnerPath.ActivateSpawnerNetworkOnLoad;
+            network.MaxToSpawn = spawnerPath.MaxSpawnCount;
+            network.RespawnTime = spawnerPath.RespawnTime * 1000;
+            network.SpawnsToMaintain = spawnerPath.NumberToMaintain;
+            network.Name = spawnerPath.PathName;
 
-            var spawner = GameObject.Instantiate(
-                parent,
-                spawnerPath.PathName,
-                wayPoint.Position,
-                wayPoint.Rotation,
-                -1,
-                (ObjectId) spawnerPath.SpawnerObjectId,
-                Lot.Spawner
-            );
-
-            spawner.Settings.Add("respawn", spawnerPath.RespawnTime);
-
-            var spawnerComponent = spawner.AddComponent<SpawnerComponent>();
-
-            //spawnerComponent.SpawnsToMaintain = (int) spawnerPath.NumberToMaintain;
-            spawnerComponent.RespawnTime = (int) spawnerPath.RespawnTime * 1000;
-            spawnerComponent.Settings = spawner.Settings;
-            spawnerComponent.SpawnTemplate = (int) spawnerPath.SpawnedLot;
-            spawnerComponent.LevelObject = new LevelObjectTemplate
+            foreach (var pathWaypoint in spawnerPath.Waypoints)
             {
-                Scale = 1
-            };
+                var spawnerWaypoint = (LuzSpawnerWaypoint) pathWaypoint;
 
-            return spawner;
+                var spawnerSettings = spawnerWaypoint.Configs;
+
+                var spawnerNode = Spawner(new LevelObjectTemplate
+                {
+                    LegoInfo = spawnerSettings,
+                    Position = spawnerWaypoint.Position,
+                    Rotation = spawnerWaypoint.Rotation,
+                    Scale = -1,
+                    Lot = Lot.Spawner,
+                    ObjectId = (ObjectId) spawnerPath.SpawnerObjectId,
+                }, zone);
+
+                var spawnerComponent = spawnerNode.GetComponent<SpawnerComponent>();
+                spawnerComponent.SpawnerNodeId = Convert.ToUInt32((int) spawnerSettings["spawner_node_id"]);
+                spawnerComponent.Network = network;
+
+                network.AddSpawnerNode(spawnerComponent);
+            }
+
+            return network;
         }
 
         public static GameObject InstantiateLoot(Lot lot, Player owner, GameObject source, Vector3 spawn)

@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using InfectedRose.Lvl;
+using InfectedRose.Core;
 using RakDotNet.IO;
 using Uchu.Core;
 using Uchu.Core.Client;
@@ -31,7 +31,7 @@ namespace Uchu.World
                     return;
                 }
 
-                if (GameObject.Settings.TryGetValue("custom_script_server", out var scriptOverride))
+                if (GameObject.Settings.TryGetValue("custom_script_server", out var scriptOverride) && (string) scriptOverride != "")
                 {
                     ScriptName = (string) scriptOverride;
                 }

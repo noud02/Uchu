@@ -103,6 +103,9 @@ namespace Uchu.World.Systems.Behaviors
         /// <param name="target">The effect target</param>
         public async void PlayFX(int effectId, string type = default, int time = 1000, GameObject target = default)
         {
+            // In these cases, the client shows the effect already (eg. when using a quicksicle or attacking)
+            var excludeTarget = BranchContext.Target == null || target == Context.Associate;
+
             target ??= BranchContext.Target;
             
             var fx = type != default
@@ -115,10 +118,10 @@ namespace Uchu.World.Systems.Behaviors
                 return;
 
             // Play the effect and schedule it's completion
-            target.PlayFX(fx.EffectName, fx.EffectType, effectId);
+            target.PlayFX(fx.EffectName, fx.EffectType, effectId, excludeTarget ? target as Player : null);
             Schedule(() =>
             {
-                target.StopFX(fx.EffectName);
+                target.StopFX(fx.EffectName, excluded: excludeTarget ? target as Player : null);
             }, time);
         }
     }

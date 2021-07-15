@@ -9,6 +9,8 @@ namespace Uchu.World
         DoubleJump,
         Air,
         Jetpack,
-        Unknown
+        Unknown,
+        UnknownNine = 9,
+        Rail,
     }
 }

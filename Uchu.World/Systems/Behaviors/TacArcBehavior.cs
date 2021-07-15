@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -252,7 +253,9 @@ namespace Uchu.World.Systems.Behaviors
         private void DeserializeBehaviorForMultipleTargets(BitReader reader,
             TacArcBehaviorExecutionParameters parameters)
         {
-            var targetCount = reader.Read<uint>();
+            // Make sure we don't try to read more targets than what should be possible
+            var targetCount = Math.Min(reader.Read<uint>(), (uint) MaxTargets);
+
             var targets = new List<GameObject>();
 
             // Find all targets for this hit
@@ -262,7 +265,6 @@ namespace Uchu.World.Systems.Behaviors
                 if (!parameters.Context.Associate.Zone.TryGetGameObject(targetId, out var target))
                 {
                     Logger.Error($"{parameters.Context.Associate} sent invalid TacArc target: {targetId}");
-                    continue;
                 }
                 targets.Add(target);
             }

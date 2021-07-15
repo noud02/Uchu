@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Timers;
-using InfectedRose.Lvl;
+using InfectedRose.Core;
 using Uchu.Physics;
 
 namespace Uchu.World.Scripting.Native

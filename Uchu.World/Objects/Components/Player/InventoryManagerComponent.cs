@@ -5,7 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using InfectedRose.Lvl;
+using InfectedRose.Core;
 using IronPython.Modules;
 using Microsoft.EntityFrameworkCore;
 using Uchu.Core;

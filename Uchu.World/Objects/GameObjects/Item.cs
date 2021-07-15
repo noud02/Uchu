@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InfectedRose.Lvl;
+using InfectedRose.Core;
 using IronPython.Modules;
 using Microsoft.EntityFrameworkCore;
 using Uchu.Core;

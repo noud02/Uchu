@@ -1,5 +1,5 @@
 using System.Numerics;
-using InfectedRose.Lvl;
+using InfectedRose.Core;
 using RakDotNet.IO;
 using Uchu.Core;
 

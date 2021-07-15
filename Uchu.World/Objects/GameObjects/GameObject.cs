@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using InfectedRose.Lvl;
+using InfectedRose.Core;
 using RakDotNet.IO;
 using Uchu.Core;
 using Uchu.Core.Client;
@@ -99,6 +100,8 @@ namespace Uchu.World
 
         public Event<int, Player> OnEmoteReceived { get; }
 
+        public Event<GameObject, string> OnSkillEvent { get; }
+
         #endregion
         
         #region Macro
@@ -122,9 +125,11 @@ namespace Uchu.World
             OnLayerChanged = new Event<Mask>();
             
             OnInteract = new Event<Player>();
-            
+
             OnEmoteReceived = new Event<int, Player>();
-            
+
+            OnSkillEvent = new Event<GameObject, string>();
+
             Listen(OnStart, () =>
             {
                 foreach (var component in Components.ToArray()) Start(component);
@@ -446,9 +451,9 @@ namespace Uchu.World
             // Check if spawner
             //
 
-            if (levelObject.LegoInfo.TryGetValue("spawntemplate", out _))
+            if (levelObject.LegoInfo.TryGetValue("spawntemplate", out _) && spawner == default)
                 return InstancingUtilities.Spawner(levelObject, parent);
-            
+
             var name = levelObject.LegoInfo.TryGetValue("npcName", out var npcName) ? (string) npcName : "";
 
             //
@@ -588,8 +593,8 @@ namespace Uchu.World
             if (writer.Flag(Spawner != null))
                 writer.Write(Spawner.GameObject.Id);
 
-            if (writer.Flag(Spawner != null && Spawner.SpawnTemplate != 0))
-                writer.Write(Spawner.SpawnTemplate);
+            if (writer.Flag(Spawner != null && Spawner.IsNetworkSpawner))
+                writer.Write(Spawner.SpawnerNodeId);
 
             var hasScale = !Transform.Scale.Equals(-1);
 

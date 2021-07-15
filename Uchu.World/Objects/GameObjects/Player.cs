@@ -57,6 +57,8 @@ namespace Uchu.World
             OnNotifyTamingBuildSuccessMessage = new Event<NotifyTamingBuildSuccessMessage>();
             OnLootPickup = new Event<Lot>();
             OnWorldLoad = new Event();
+            OnRailMovementReady = new Event();
+            OnCancelRailMovement = new Event();
 
             Listen(OnStart, () =>
             {
@@ -246,6 +248,10 @@ namespace Uchu.World
 
         public Event<Vector3, Quaternion> OnPositionUpdate { get; }
 
+        public Event OnCancelRailMovement { get; }
+
+        public Event OnRailMovementReady { get; }
+
         public IRakConnection Connection { get; private set; }
 
         public Perspective Perspective { get; private set; }
@@ -319,7 +325,7 @@ namespace Uchu.World
                 CeleLeadOut = celebration.CeleLeadOut.Value,
                 CelebrationID = celebration.Id.Value,
                 Duration = celebration.Duration.Value,
-                IconID = celebration.IconID.Value,
+                IconID = celebration.IconID ?? default,
                 MainText = celebration.MainText,
                 MixerProgram = celebration.MixerProgram,
                 MusicCue = celebration.MusicCue,

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using RakDotNet.IO;
+using Uchu.Core;
 
 namespace Uchu.World.Systems.Behaviors
 {
@@ -21,6 +22,7 @@ namespace Uchu.World.Systems.Behaviors
         private BehaviorBase Action { get; set; }
         private int Imagination { get; set; }
         private bool IsEnemyFaction { get; set; }
+        private int? TargetHasBuff { get; set; }
         private BehaviorBase ActionFalse { get; set; }
         private BehaviorBase ActionTrue { get; set; }
         
@@ -31,6 +33,7 @@ namespace Uchu.World.Systems.Behaviors
             ActionTrue = await GetBehavior("action_true");
             Imagination = await GetParameter<int>("imagination");
             IsEnemyFaction = (await GetParameter("isEnemyFaction"))?.Value > 0;
+            TargetHasBuff = (int?) (await GetParameter("target_has_buff"))?.Value;
         }
 
         protected override void DeserializeStart(BitReader reader, SwitchBehaviorExecutionParameters parameters)
@@ -39,6 +42,12 @@ namespace Uchu.World.Systems.Behaviors
             if (Imagination > 0 || !IsEnemyFaction)
                 parameters.State = reader.ReadBit();
 
+            if (TargetHasBuff != default && TargetHasBuff != -1 && parameters.BranchContext?.Target != null)
+            {
+                parameters.State = parameters.BranchContext.Target.TryGetComponent<BuffComponent>(out var buffComponent)
+                                   && buffComponent.HasBuff((uint) TargetHasBuff);
+            }
+
             parameters.Parameters = parameters.State
                 ? ActionTrue.DeserializeStart(reader, parameters.Context, parameters.BranchContext)
                 : ActionFalse.DeserializeStart(reader, parameters.Context, parameters.BranchContext);
@@ -46,11 +55,17 @@ namespace Uchu.World.Systems.Behaviors
 
         protected override void SerializeStart(BitWriter writer, SwitchBehaviorExecutionParameters parameters)
         {
-            
             parameters.State = true;
             if (Imagination > 0 || !IsEnemyFaction)
             {
                 parameters.State = parameters.BranchContext.Target != default && parameters.NpcContext.Alive;
+
+                if (TargetHasBuff != default && TargetHasBuff != -1 && parameters.BranchContext?.Target != null)
+                {
+                    parameters.State = parameters.BranchContext.Target.TryGetComponent<BuffComponent>(out var buffComponent)
+                                       && buffComponent.HasBuff((uint) TargetHasBuff);
+                }
+
                 writer.WriteBit(parameters.State);
             }
 

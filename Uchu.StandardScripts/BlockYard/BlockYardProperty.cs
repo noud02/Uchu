@@ -215,26 +215,11 @@ namespace Uchu.StandardScripts.BlockYard
                 {
                     if (IsMaelstrom ? MaelstromObjects.Contains(path.PathName) : PeacefulObjects.Contains(path.PathName) || GlobalObjects.Contains(path.PathName))
                     {
+                        var network = InstancingUtilities.SpawnerNetwork(path, Zone);
+                        if (network == null)
+                            return;
 
-                        var obj = InstancingUtilities.Spawner(path, Zone);
-
-                        if (obj == null) return;
-
-                        obj.Layer = StandardLayer.Hidden;
-
-                        var spawner = obj.GetComponent<SpawnerComponent>();
-
-                        spawner.SpawnsToMaintain = (int)path.NumberToMaintain;
-
-                        spawner.SpawnLocations = path.Waypoints.Select(w => new SpawnLocation
-                        {
-                            Position = w.Position,
-                            Rotation = Quaternion.Identity
-                        }).ToList();
-
-                        Start(obj);
-
-                        spawner.SpawnCluster();
+                        network.SpawnAll();
                     }
                 }
                 catch (Exception e)
@@ -252,26 +237,11 @@ namespace Uchu.StandardScripts.BlockYard
                 {
                     if (MaelstromObjects.Contains(path.PathName))
                     {
+                        var network = InstancingUtilities.SpawnerNetwork(path, Zone);
+                        if (network == null)
+                            return;
 
-                        var obj = InstancingUtilities.Spawner(path, Zone);
-
-                        if (obj == null) return;
-
-                        obj.Layer = StandardLayer.Hidden;
-
-                        var spawner = obj.GetComponent<SpawnerComponent>();
-
-                        spawner.SpawnsToMaintain = (int)path.NumberToMaintain;
-
-                        spawner.SpawnLocations = path.Waypoints.Select(w => new SpawnLocation
-                        {
-                            Position = w.Position,
-                            Rotation = Quaternion.Identity
-                        }).ToList();
-
-                        Start(obj);
-
-                        spawner.SpawnCluster();
+                        network.SpawnAll();
                     }
                 }
                 catch (Exception e)

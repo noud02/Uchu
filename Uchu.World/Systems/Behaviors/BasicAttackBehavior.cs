@@ -88,7 +88,7 @@ namespace Uchu.World.Systems.Behaviors
             // Store as function as server side and client side execution is scheduled differently
             parameters.NetFavor(() =>
             {
-                if (parameters.BranchContext.Target != default &&
+                if (parameters.BranchContext.Target != null &&
                     parameters.BranchContext.Target.TryGetComponent<DestroyableComponent>(out var stats) &&
                     (parameters.ServerSide && parameters.SuccessState == 1 || !parameters.ServerSide))
                 {

@@ -228,6 +228,13 @@ namespace Uchu.World
         }
 
         /// <summary>
+        /// Whether a player has an active mission that has the provided id as mission id.
+        /// </summary>
+        /// <param name="id">The id of the mission to find in the mission inventory</param>
+        /// <returns><c>true</c> if the player has an active mission with the given id, <c>false</c> otherwise</returns>
+        public bool HasActive(MissionId id) => HasActive((int) id);
+
+        /// <summary>
         /// Checks if there's a mission that requires a certain item lot to be obtained
         /// </summary>
         /// <param name="lot">The lot to check for</param>

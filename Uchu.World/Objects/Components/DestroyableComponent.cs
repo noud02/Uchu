@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -223,7 +224,18 @@ namespace Uchu.World
                 
                 if (destroyable == default) return;
 
-                Factions = new[] {destroyable.Faction ?? 1};
+                var factions = new List<int>();
+
+                if (destroyable.Faction != null)
+                    factions.Add((int) destroyable.Faction);
+
+                if (int.TryParse(destroyable.FactionList, out var secondFaction)
+                    && secondFaction != destroyable.Faction)
+                    factions.Add(secondFaction);
+
+                if (factions.Count == 0) factions.Add(1);
+
+                Factions = factions.ToArray();
 
                 Smashable = destroyable.IsSmashable ?? false;
 

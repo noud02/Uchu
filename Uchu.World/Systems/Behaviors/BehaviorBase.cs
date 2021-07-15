@@ -186,7 +186,7 @@ namespace Uchu.World.Systems.Behaviors
         /// <summary>
         /// Handler for executing effects
         /// </summary>
-        private string EffectHandler { get; set; }
+        protected string EffectHandler { get; set; }
         
         /// <summary>
         /// Cache of all behavior bases that have been created

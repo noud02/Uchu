@@ -1,4 +1,4 @@
-using InfectedRose.Lvl;
+using InfectedRose.Core;
 using RakDotNet.IO;
 using Uchu.Core;
 
@@ -52,8 +52,8 @@ namespace Uchu.World
 
             if (ExtraInfo != null)
             {
-                writer.Write(ExtraInfo);
-                
+                Uchu.Core.BitWriterExtensions.Write(writer, ExtraInfo);
+
                 writer.Write<byte>(0);
                 writer.Write<byte>(0);
             }
