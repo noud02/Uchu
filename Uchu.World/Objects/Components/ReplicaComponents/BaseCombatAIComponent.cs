@@ -150,7 +150,7 @@ namespace Uchu.World
                 if (entry.GameObject.TryGetComponent<TriggerComponent>(out _))
                     continue;
                 
-                if (Stats.Enemies.Contains(entry.Factions.First()))
+                if (Stats.Enemies.Contains(entry.Factions.First()) && !Stats.Friends.Contains(entry.Factions.First()))
                 {
                     targets.Add(entry.GameObject);
                 }

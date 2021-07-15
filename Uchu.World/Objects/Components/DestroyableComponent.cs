@@ -25,6 +25,7 @@ namespace Uchu.World
         private uint _maxImagination;
         
         public int[] Factions { get; set; } = new int[0];
+        public int[] Friends { get; set; } = new int[0];
         
         public int[] Enemies { get; set; } = new int[0];
         
@@ -236,6 +237,16 @@ namespace Uchu.World
                 if (string.IsNullOrWhiteSpace(faction.EnemyList)) return;
 
                 Enemies = faction.EnemyList
+                    .Replace(" ", "")
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray();
+
+                if (faction?.FriendList == default) return;
+                
+                if (string.IsNullOrWhiteSpace(faction.FriendList)) return;
+                
+                Friends = faction.FriendList
                     .Replace(" ", "")
                     .Split(',')
                     .Select(int.Parse)
